@@ -123,10 +123,17 @@ workflow is `.github/workflows/deploy.yml`. Pages is configured with
 
 ### Repository model
 
-This repository is published as a single initial release. Issues are disabled
-and `main` is not protected, so fixes are committed directly to `main` and
-deployed by the workflow. A manual deploy can also be started from the Actions
-tab with `workflow_dispatch`.
+Issues are enabled and use the templates in `.github/ISSUE_TEMPLATE/`:
+**Bug report** and **Feature request**. Blank issues are disabled; use the
+contact links for README and lab documentation instead.
+
+Pull requests use `.github/pull_request_template.md` and must link an open
+issue with a closing keyword (`Closes #12`): the `pr-policy` workflow
+(`.github/workflows/pr-policy.yml`) fails otherwise. `main` is not protected, so
+small direct commits are possible, but changes should go through a branch and a
+PR so the checks run. Every merged push to `main` is deployed by the workflow.
+A manual deploy can also be started from the Actions tab with
+`workflow_dispatch`.
 
 The build also includes a branded `404.html`, used by GitHub Pages for missing
 URLs. The artifact is served as-is: Jekyll does not run, so `_next/` is not

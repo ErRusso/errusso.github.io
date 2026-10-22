@@ -1,0 +1,102 @@
+name: Bug report
+description: Something on the site or in the build is broken or behaves unexpectedly.
+title: "fix: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Please do not include personal data, tokens or
+        anything from the `labs/idor/` lab other than a description: it is
+        deliberately vulnerable.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: A clear description of the bug and what you saw.
+      placeholder: The theme toggle resets to light after navigating to a project page.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+      description: What you expected to happen instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Numbered steps, starting from a URL.
+      placeholder: |
+        1. Open https://errusso.github.io/work/...
+        2. Switch the theme to dark
+        3. Open a project card
+        4. See the page rendered in light mode
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of the project is affected?
+      multiple: true
+      options:
+        - Home
+        - Work / case studies
+        - Professional profile
+        - CV generation (bun run cv)
+        - Security lab (labs/idor)
+        - Theme / styling
+        - Content (copy, projects, now.json)
+        - Build & deployment
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: language
+    attributes:
+      label: Language
+      description: Does it affect one locale or both?
+      options:
+        - Both English (/) and Italian (/it)
+        - English only
+        - Italian only
+        - Not applicable
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: Page URL
+      description: The affected URL, if it is a page on the deployed site.
+      placeholder: https://errusso.github.io/it/professional
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser and version, device, OS. For build issues, include the Node/bun version and the command you ran.
+      placeholder: |
+        Browser: Firefox 142
+        Device: Pixel 8, Android 16
+        Command: bun run build
+    validations:
+      required: false
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context
+      description: Screenshots, console output, stack traces or anything else that helps.
+    validations:
+      required: false

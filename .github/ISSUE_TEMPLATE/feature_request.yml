@@ -1,0 +1,62 @@
+name: Feature request
+description: Suggest a new feature, a content change or an improvement to the site.
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is a static Next.js export with no CMS, database or backend. Keep
+        proposals within that constraint unless they explain why it should change.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What is missing or inconvenient today? Describe the situation, not only the solution.
+      placeholder: There is no way to see ... without ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: What you would like to happen.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      multiple: true
+      options:
+        - Home
+        - Work / case studies
+        - Professional profile
+        - CV generation
+        - Security lab
+        - Theme / styling
+        - Content (copy, projects, now.json)
+        - Build & deployment
+        - Tooling / CI
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other approaches or workarounds you considered.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - label: This affects both English (/) and Italian (/it) content.
+        - label: I am willing to open a pull request for this.
