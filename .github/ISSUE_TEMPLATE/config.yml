@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Development, content and deployment notes
+    url: https://github.com/ErRusso/errusso.github.io#readme
+    about: Where copy, projects and CVs live, how the build works, and how the site is deployed.
+  - name: Security lab disclaimer
+    url: https://github.com/ErRusso/errusso.github.io#security-lab
+    about: The BOLA/IDOR lab in labs/idor/ is deliberately vulnerable. Read this before reporting anything about it.
