@@ -47,11 +47,17 @@ and files) and the update date. Curated copy is preserved when the release URL
 is unchanged; new entries receive a short generated description that can be
 edited afterwards.
 
-The script also runs in the deploy workflow (`main` and `workflow_dispatch`)
-before the build, so the published site stays current even when the JSON has
-not been recommitted. Pull request builds skip it to keep checks
-deterministic. Locally it falls back to `gh auth token`; in Actions it receives
-`GITHUB_TOKEN`. The token is never printed.
+The script also runs in the deploy workflow (`main`, `workflow_dispatch` and a
+weekly schedule) before the build, so the published site stays current even
+when the JSON has not been recommitted. Pull request builds skip it to keep
+checks deterministic. Locally it falls back to `gh auth token`; in Actions it
+receives `GITHUB_TOKEN`. The token is never printed.
+
+The scheduled run is `.github/workflows/deploy.yml` every **Monday at 06:00
+UTC** (`cron: "0 6 * * 1"`). It rebuilds and deploys without a commit, and
+runs `now:sync --strict`: a GitHub outage fails the job instead of publishing
+the committed stats under a fresh "updated" date. Push and manual runs stay
+lenient, so an outage never blocks a deployment.
 
 ```bash
 bun run now:sync                 # update content/now.json
@@ -117,7 +123,8 @@ marks stay identical. The alt text is in `content/copy.ts`
 The site is published at **https://errusso.github.io** from the repository
 **`ErRusso/errusso.github.io`** (a user site: no subpath and no `basePath`).
 
-Publishing is automatic: every push to `main` builds `out/` and deploys it. The
+Publishing is automatic: every push to `main` builds `out/` and deploys it,
+and a weekly scheduled run redeploys to refresh the generated stats. The
 workflow is `.github/workflows/deploy.yml`. Pages is configured with
 **Settings → Pages → Source: GitHub Actions**.
 
@@ -131,9 +138,10 @@ Pull requests use `.github/pull_request_template.md` and must link an open
 issue with a closing keyword (`Closes #12`): the `pr-policy` workflow
 (`.github/workflows/pr-policy.yml`) fails otherwise. `main` is not protected, so
 small direct commits are possible, but changes should go through a branch and a
-PR so the checks run. Every merged push to `main` is deployed by the workflow.
-A manual deploy can also be started from the Actions tab with
-`workflow_dispatch`.
+PR so the checks run. Every merged push to `main` is deployed by the workflow,
+and a scheduled run redeploys weekly (Mondays, 06:00 UTC) to refresh the Now /
+Building stats. A manual deploy can also be started from the Actions tab with
+`workflow_dispatch`; the run name shows which event triggered it.
 
 The build also includes a branded `404.html`, used by GitHub Pages for missing
 URLs. The artifact is served as-is: Jekyll does not run, so `_next/` is not

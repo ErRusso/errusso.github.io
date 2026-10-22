@@ -1,19 +1,28 @@
 name: Build and deploy
 
+# Scheduled runs keep the Now / Building stats (PipeDuck release, Marmotta
+# contributions, update date) current even when nothing is committed.
 on:
   push:
     branches: [main]
   pull_request:
   workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays at 06:00 UTC
+
+run-name: Build and deploy (${{ github.event_name }})
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# A weekly run and a push share the same ref, so they must not cancel each
+# other: only superseded pull request runs are cancelled. Pushes queue behind a
+# running deploy instead, and GitHub keeps just the latest pending run.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -31,9 +40,12 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      # Weekly runs are strict: if GitHub does not answer, fail instead of
+      # publishing the committed stats under a fresh "updated" date. Push and
+      # manual runs stay lenient so a GitHub outage never blocks a deployment.
       - name: Sync Now/Building data
         if: github.event_name != 'pull_request'
-        run: bun run now:sync
+        run: bun run now:sync -- ${{ github.event_name == 'schedule' && '--strict' || '' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
