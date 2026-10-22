@@ -1,4 +1,19 @@
 import type { Lang } from "@/lib/i18n";
+import { now } from "@/lib/now";
+
+const audit = now.audit;
+const auditEn =
+  audit.vulnerabilities === 0
+    ? `0 known vulnerabilities across ${audit.packages} packages`
+    : `${audit.vulnerabilities} known vulnerabilities across ${audit.packages} packages`;
+const auditIt =
+  audit.vulnerabilities === 0
+    ? `0 vulnerabilità note su ${audit.packages} pacchetti`
+    : `${audit.vulnerabilities} vulnerabilità note su ${audit.packages} pacchetti`;
+const auditOutput =
+  audit.vulnerabilities === 0
+    ? `No vulnerabilities found (checked ${audit.packages} packages)`
+    : `Found ${audit.vulnerabilities} vulnerabilities (checked ${audit.packages} packages)`;
 
 export type SecurityRow = {
   surface: string;
@@ -41,7 +56,7 @@ export const security: Record<Lang, SecurityCopy> = {
       intro: "Checks I can reproduce on systems I am allowed to touch.",
       items: [
         "This site is a static export: no server code, no database, no forms, no cookies. There is no session or injection surface to speak of.",
-        "Dependencies: bun audit reports 0 known vulnerabilities across 103 packages.",
+        `Dependencies: bun audit reports ${auditEn}.`,
         "No third-party scripts or CDNs. Fonts are self-hosted, there is no analytics and no external font API.",
         "Every external link opens with rel=\"noreferrer\".",
         "No secrets tracked: .env* is ignored and the repository contains no keys.",
@@ -54,7 +69,7 @@ export const security: Record<Lang, SecurityCopy> = {
       items: [
         "main is protected: every change requires review and the required checks, enforced for the owner too.",
         "Two required checks: build, plus a policy check that every change closes a real issue.",
-        "The Actions token is read-only by default; only the deploy job gets pages: write.",
+        "The workflow token declares contents: read; Pages deployment adds pages: write and id-token: write.",
         "No collaborators and no pending invitations. Force-push and branch deletion are blocked.",
         "Linear history only: squash or rebase, no merge commits.",
       ],
@@ -85,13 +100,13 @@ export const security: Record<Lang, SecurityCopy> = {
           surface: "This site",
           threat: "Defacement through the repository",
           status: "verified",
-          evidence: "Protected main, required checks, read-only token, no collaborators.",
+          evidence: "Protected main, required checks, contents: read token, no collaborators.",
         },
         {
           surface: "This site",
           threat: "Third-party code injected at build time",
           status: "verified",
-          evidence: "Lockfile-pinned dependencies, zero known vulnerabilities, no external scripts.",
+          evidence: `Lockfile-pinned dependencies, ${audit.vulnerabilities === 0 ? "zero known vulnerabilities" : `${audit.vulnerabilities} known vulnerabilities`}, no external scripts.`,
         },
         {
           surface: "This site",
@@ -126,7 +141,7 @@ export const security: Record<Lang, SecurityCopy> = {
       title: "Check it yourself",
       intro: "The same three commands I ran, with the output I got.",
       items: [
-        { command: "bun audit", output: "No vulnerabilities found (checked 103 packages)" },
+        { command: "bun audit", output: auditOutput },
         {
           command: "curl -sI https://errusso.github.io",
           output: "strict-transport-security present · no content-security-policy (GitHub Pages)",
@@ -156,7 +171,7 @@ export const security: Record<Lang, SecurityCopy> = {
       intro: "Verifiche riproducibili su sistemi che posso toccare.",
       items: [
         "Questo sito è un export statico: nessun codice server, nessun database, nessun form, nessun cookie. Non c’è superficie di sessione o di injection.",
-        "Dipendenze: bun audit riporta 0 vulnerabilità note su 103 pacchetti.",
+        `Dipendenze: bun audit riporta ${auditIt}.`,
         "Nessuno script o CDN di terze parti. Font self-hosted, nessuna analytics, nessuna API esterna per i font.",
         "Ogni link esterno si apre con rel=\"noreferrer\".",
         "Nessun segreto nel repository: i file .env* sono ignorati e non ci sono chiavi.",
@@ -169,7 +184,7 @@ export const security: Record<Lang, SecurityCopy> = {
       items: [
         "main è protetto: ogni modifica richiede review e i check obbligatori, anche per il proprietario.",
         "Due check obbligatori: build e una verifica che ogni modifica chiuda una issue reale.",
-        "Il token delle Actions è read-only per default; solo il job di deploy ha pages: write.",
+        "Il token del workflow dichiara contents: read; il deploy Pages aggiunge pages: write e id-token: write.",
         "Nessun collaboratore e nessun invito pendente. Force-push e cancellazione del branch sono bloccati.",
         "Solo storia lineare: squash o rebase, niente merge commit.",
       ],
@@ -200,13 +215,13 @@ export const security: Record<Lang, SecurityCopy> = {
           surface: "Questo sito",
           threat: "Defacement attraverso il repository",
           status: "verified",
-          evidence: "main protetto, check obbligatori, token read-only, nessun collaboratore.",
+          evidence: "main protetto, check obbligatori, token contents: read, nessun collaboratore.",
         },
         {
           surface: "Questo sito",
           threat: "Codice di terze parti iniettato in build",
           status: "verified",
-          evidence: "Dipendenze bloccate dal lockfile, zero vulnerabilità note, nessuno script esterno.",
+          evidence: `Dipendenze bloccate dal lockfile, ${audit.vulnerabilities === 0 ? "zero vulnerabilità note" : `${audit.vulnerabilities} vulnerabilità note`}, nessuno script esterno.`,
         },
         {
           surface: "Questo sito",
@@ -241,7 +256,7 @@ export const security: Record<Lang, SecurityCopy> = {
       title: "Verificalo tu",
       intro: "Gli stessi tre comandi che ho eseguito, con l’output ottenuto.",
       items: [
-        { command: "bun audit", output: "No vulnerabilities found (checked 103 packages)" },
+        { command: "bun audit", output: auditOutput },
         {
           command: "curl -sI https://errusso.github.io",
           output: "strict-transport-security presente · content-security-policy assente (GitHub Pages)",

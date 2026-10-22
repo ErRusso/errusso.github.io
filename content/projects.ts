@@ -12,6 +12,41 @@ const marmottaFallback = {
 const marmottaStats = now.projectStats?.marmotta ?? marmottaFallback;
 const marmottaDiff = `+${marmottaStats.additions} / −${marmottaStats.deletions}`;
 
+const pipeduckStats = now.projectStats?.pipeduck ?? {
+  testFunctions: 29,
+  assertions: 431,
+  trackedFiles: 86,
+  cppKb: 368,
+  buildJobs: 4,
+};
+const pipeduckBuildJobs = pipeduckStats.buildJobs ?? 4;
+const pipeduckRelease = now.release;
+const audit = now.audit;
+// Seed values, used only if the committed JSON predates the Lighthouse sync.
+// `content/now.json` normally carries the live `site` block.
+const siteStats = now.site ?? {
+  lighthouseVersion: "13.5",
+  date: "2026-10-21",
+  mobile: {
+    performance: 95,
+    accessibility: 100,
+    bestPractices: 100,
+    seo: 100,
+    transferredKb: 287,
+    lcpSeconds: 2.7,
+    cls: 0,
+  },
+  desktop: {
+    performance: 100,
+    accessibility: 100,
+    bestPractices: 100,
+    seo: 100,
+    transferredKb: 0,
+    lcpSeconds: 0,
+    cls: 0,
+  },
+};
+
 function formatDate(value: string, lang: Lang): string {
   return new Intl.DateTimeFormat(lang === "it" ? "it-IT" : "en-GB", {
     day: "2-digit",
@@ -19,6 +54,30 @@ function formatDate(value: string, lang: Lang): string {
     year: "numeric",
     timeZone: "UTC",
   }).format(new Date(`${value}T12:00:00Z`));
+}
+
+function formatMonth(value: string, lang: Lang): string {
+  return new Intl.DateTimeFormat(lang === "it" ? "it-IT" : "en-GB", {
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${value}T12:00:00Z`));
+}
+
+function formatLongDate(value: string, lang: Lang): string {
+  return new Intl.DateTimeFormat(lang === "it" ? "it-IT" : "en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${value}T12:00:00Z`));
+}
+
+function decimal(value: number, lang: Lang): string {
+  return value.toLocaleString(lang === "it" ? "it-IT" : "en-GB", {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  });
 }
 
 function marmottaEvidence(lang: Lang): { value: string; label: string }[] {
@@ -80,21 +139,39 @@ export const projects: Project[] = [
     role: { en: "Creator, everything", it: "Creatore, tutto" },
     stack: ["C++20", "PipeWire", "libpulse", "GTK4", "CMake", "GitHub Actions"],
     highlight: {
-      en: "24 test functions · 4 CI jobs · v1.1.0",
-      it: "24 funzioni di test · 4 job CI · v1.1.0",
+      en: `${pipeduckStats.testFunctions} test functions · ${pipeduckBuildJobs} build jobs · v${pipeduckRelease.version}`,
+      it: `${pipeduckStats.testFunctions} funzioni di test · ${pipeduckBuildJobs} job di build · v${pipeduckRelease.version}`,
     },
     evidence: {
       en: [
-        { value: "v1.1.0", label: "Release · Oct 2026" },
-        { value: "24", label: "Test functions · 340 assertions" },
-        { value: "4", label: "CI jobs: gcc/clang × GUI on/off" },
-        { value: "86", label: "Tracked files · ~330 KB of C++" },
+        {
+          value: `v${pipeduckRelease.version}`,
+          label: `Release · ${formatMonth(pipeduckRelease.date, "en")}`,
+        },
+        {
+          value: `${pipeduckStats.testFunctions}`,
+          label: `Test functions · ${pipeduckStats.assertions} assertions`,
+        },
+        { value: `${pipeduckBuildJobs}`, label: "Build jobs · compiler × GUI matrix" },
+        {
+          value: `${pipeduckStats.trackedFiles}`,
+          label: `Tracked files · ~${pipeduckStats.cppKb} KB of C++`,
+        },
       ],
       it: [
-        { value: "v1.1.0", label: "Release · ott 2026" },
-        { value: "24", label: "Funzioni di test · 340 asserzioni" },
-        { value: "4", label: "Job CI: gcc/clang × GUI on/off" },
-        { value: "86", label: "File tracciati · ~330 KB di C++" },
+        {
+          value: `v${pipeduckRelease.version}`,
+          label: `Release · ${formatMonth(pipeduckRelease.date, "it")}`,
+        },
+        {
+          value: `${pipeduckStats.testFunctions}`,
+          label: `Funzioni di test · ${pipeduckStats.assertions} asserzioni`,
+        },
+        { value: `${pipeduckBuildJobs}`, label: "Job di build · matrice compilatore × GUI" },
+        {
+          value: `${pipeduckStats.trackedFiles}`,
+          label: `File tracciati · ~${pipeduckStats.cppKb} KB di C++`,
+        },
       ],
     },
     repo: "https://github.com/ErRusso/pipeduck",
@@ -103,7 +180,7 @@ export const projects: Project[] = [
       en: {
         summary:
           "A C++20 daemon that turns your music down when someone talks in a call — and fades it back properly.",
-        tagline: "Automatic audio ducking for PipeWire. Born from a small annoyance, now at 1.1.",
+        tagline: `Automatic audio ducking for PipeWire. Born from a small annoyance, now at v${pipeduckRelease.version}.`,
         sections: [
           {
             title: "The opening",
@@ -115,15 +192,15 @@ export const projects: Project[] = [
           },
           {
             title: "The endgame",
-            body: "Version 1.1.0 is tagged, MIT-licensed, built by CI on every commit across gcc and clang with the GUI both on and off, and it has been running on my machine since before it had a name. The interesting part was never the DSP — it was making audio routing state safe to touch.",
+            body: `Version ${pipeduckRelease.version} is tagged, MIT-licensed, built by CI on every commit across gcc and clang with the GUI both on and off, and it has been running on my machine since before it had a name. The interesting part was never the DSP — it was making audio routing state safe to touch.`,
           },
         ],
-        result: "1.1.0 shipped · MIT · 24 test functions in CI",
+        result: `${pipeduckRelease.version} shipped · MIT · ${pipeduckStats.testFunctions} test functions in CI`,
       },
       it: {
         summary:
           "Un daemon C++20 che abbassa la musica quando qualcuno parla in chiamata — e la riporta su come si deve.",
-        tagline: "Ducking audio automatico per PipeWire. Nato da un fastidio, arrivato alla 1.1.",
+        tagline: `Ducking audio automatico per PipeWire. Nato da un fastidio, arrivato alla v${pipeduckRelease.version}.`,
         sections: [
           {
             title: "L’apertura",
@@ -135,10 +212,10 @@ export const projects: Project[] = [
           },
           {
             title: "Il finale",
-            body: "La 1.1.0 è taggata, licenza MIT, compilata dalla CI a ogni commit su gcc e clang con la GUI attiva e disattivata, e gira sulla mia macchina da prima che avesse un nome. La parte interessante non è mai stato il DSP: era rendere sicuro toccare lo stato del routing audio.",
+            body: `La ${pipeduckRelease.version} è taggata, licenza MIT, compilata dalla CI a ogni commit su gcc e clang con la GUI attiva e disattivata, e gira sulla mia macchina da prima che avesse un nome. La parte interessante non è mai stato il DSP: era rendere sicuro toccare lo stato del routing audio.`,
           },
         ],
-        result: "1.1.0 rilasciata · MIT · 24 funzioni di test in CI",
+        result: `${pipeduckRelease.version} rilasciata · MIT · ${pipeduckStats.testFunctions} funzioni di test in CI`,
       },
     },
   },
@@ -214,21 +291,45 @@ export const projects: Project[] = [
     role: { en: "Design and build", it: "Design e sviluppo" },
     stack: ["Next.js", "TypeScript", "Tailwind CSS", "GitHub Pages"],
     highlight: {
-      en: "95 Lighthouse mobile · 287 KB transferred",
-      it: "95 Lighthouse mobile · 287 KB trasferiti",
+      en: `${siteStats.mobile.performance} Lighthouse mobile · ${siteStats.mobile.transferredKb} KB transferred`,
+      it: `${siteStats.mobile.performance} Lighthouse mobile · ${siteStats.mobile.transferredKb} KB trasferiti`,
     },
     evidence: {
       en: [
-        { value: "95", label: "Lighthouse performance · mobile" },
-        { value: "100", label: "Accessibility · best practices · SEO" },
-        { value: "287 KB", label: "Transferred on mobile · CLS 0" },
-        { value: "0", label: "Known vulnerabilities · 103 packages" },
+        {
+          value: `${siteStats.mobile.performance}`,
+          label: "Lighthouse performance · mobile",
+        },
+        {
+          value: `${siteStats.mobile.accessibility}/${siteStats.mobile.bestPractices}/${siteStats.mobile.seo}`,
+          label: "Accessibility · best practices · SEO",
+        },
+        {
+          value: `${siteStats.mobile.transferredKb} KB`,
+          label: `Transferred on mobile · CLS ${siteStats.mobile.cls}`,
+        },
+        {
+          value: `${audit.vulnerabilities}`,
+          label: `Known vulnerabilities · ${audit.packages} packages`,
+        },
       ],
       it: [
-        { value: "95", label: "Performance Lighthouse · mobile" },
-        { value: "100", label: "Accessibilità · best practice · SEO" },
-        { value: "287 KB", label: "Trasferiti su mobile · CLS 0" },
-        { value: "0", label: "Vulnerabilità note · 103 pacchetti" },
+        {
+          value: `${siteStats.mobile.performance}`,
+          label: "Performance Lighthouse · mobile",
+        },
+        {
+          value: `${siteStats.mobile.accessibility}/${siteStats.mobile.bestPractices}/${siteStats.mobile.seo}`,
+          label: "Accessibilità · best practice · SEO",
+        },
+        {
+          value: `${siteStats.mobile.transferredKb} KB`,
+          label: `Trasferiti su mobile · CLS ${siteStats.mobile.cls}`,
+        },
+        {
+          value: `${audit.vulnerabilities}`,
+          label: `Vulnerabilità note · ${audit.packages} pacchetti`,
+        },
       ],
     },
     cover: "window",
@@ -244,14 +345,14 @@ export const projects: Project[] = [
           },
           {
             title: "The middle game",
-            body: "Next.js with static export, TypeScript, Tailwind v4 and three typefaces. Two languages with proper hreflang, generated metadata, no contact form for spammers, no database to maintain. Everything interactive is a few kilobytes of client code: a marquee, a clock, a copy button and a piano hidden in the footer.",
+            body: "Next.js with static export, TypeScript, Tailwind and self-hosted typefaces. Two languages with proper hreflang, generated metadata, no contact form for spammers, no database to maintain. Everything interactive is a few kilobytes of client code: a marquee, a clock, a copy button and a piano hidden in the footer.",
           },
           {
             title: "The endgame",
-            body: "Deployed to GitHub Pages from a single workflow. Lighthouse 13.5 on the live site, 21 October 2026: 95 on mobile and 100 on desktop, 287 KB transferred, LCP 2.7s on mobile and zero layout shift.",
+            body: `Deployed to GitHub Pages from a single workflow. Lighthouse ${siteStats.lighthouseVersion} on the production build, ${formatLongDate(siteStats.date, "en")}: ${siteStats.mobile.performance} on mobile and ${siteStats.desktop.performance} on desktop, ${siteStats.mobile.transferredKb} KB transferred, LCP ${decimal(siteStats.mobile.lcpSeconds, "en")}s on mobile and ${siteStats.mobile.cls === 0 ? "zero layout shift" : `CLS ${siteStats.mobile.cls}`}.`,
           },
         ],
-        result: "95/100 mobile · 100/100 desktop · CLS 0",
+        result: `${siteStats.mobile.performance}/100 mobile · ${siteStats.desktop.performance}/100 desktop · CLS ${siteStats.mobile.cls}`,
       },
       it: {
         summary:
@@ -264,14 +365,14 @@ export const projects: Project[] = [
           },
           {
             title: "La partita di mezzo",
-            body: "Next.js con export statico, TypeScript, Tailwind v4 e tre caratteri. Due lingue con hreflang corretto, metadata generati, nessun form per gli spammer, nessun database da mantenere. Tutto ciò che è interattivo sono pochi kilobyte di codice client: un marquee, un orologio, un pulsante copia e un pianoforte nascosto nel footer.",
+            body: "Next.js con export statico, TypeScript, Tailwind e caratteri self-hosted. Due lingue con hreflang corretto, metadata generati, nessun form per gli spammer, nessun database da mantenere. Tutto ciò che è interattivo sono pochi kilobyte di codice client: un marquee, un orologio, un pulsante copia e un pianoforte nascosto nel footer.",
           },
           {
             title: "Il finale",
-            body: "Deploy su GitHub Pages da un unico workflow. Lighthouse 13.5 sul sito live, 21 ottobre 2026: 95 su mobile e 100 su desktop, 287 KB trasferiti, LCP 2,7s su mobile e zero layout shift.",
+            body: `Deploy su GitHub Pages da un unico workflow. Lighthouse ${siteStats.lighthouseVersion} sulla build di produzione, ${formatLongDate(siteStats.date, "it")}: ${siteStats.mobile.performance} su mobile e ${siteStats.desktop.performance} su desktop, ${siteStats.mobile.transferredKb} KB trasferiti, LCP ${decimal(siteStats.mobile.lcpSeconds, "it")}s su mobile e ${siteStats.mobile.cls === 0 ? "zero layout shift" : `CLS ${siteStats.mobile.cls}`}.`,
           },
         ],
-        result: "95/100 mobile · 100/100 desktop · CLS 0",
+        result: `${siteStats.mobile.performance}/100 mobile · ${siteStats.desktop.performance}/100 desktop · CLS ${siteStats.mobile.cls}`,
       },
     },
   },

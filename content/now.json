@@ -1,56 +1,131 @@
 {
-  "updated": "2026-10-22",
-  "building": [
+  "updated": "2026-10-23",
+  "release": {
+    "tag": "v1.2.0",
+    "version": "1.2.0",
+    "name": "v1.2.0",
+    "date": "2026-10-21",
+    "href": "https://github.com/ErRusso/pipeduck/releases/tag/v1.2.0"
+  },
+  "audit": {
+    "packages": 103,
+    "vulnerabilities": 0
+  },
+  "repos": [
     {
       "id": "pipeduck",
-      "title": "PipeDuck",
-      "meta": "C++20 · PipeWire · v1.2.0",
+      "name": "PipeDuck",
+      "repo": "ErRusso/pipeduck",
+      "language": "C++",
+      "date": "2026-10-21",
       "body": {
-        "en": "Post-1.2 maintenance. Next: threat-model the tray and D-Bus surface, then the next release.",
-        "it": "Manutenzione post-1.2. Prossimo passo: threat model della tray e della superficie D-Bus, poi la prossima release."
+        "en": "Reliability and routing fixes from the audit, plus the work behind the latest release.",
+        "it": "Fix di affidabilità e routing dall'audit, più il lavoro dietro l'ultima release."
       },
       "href": "https://github.com/ErRusso/pipeduck"
     },
     {
-      "id": "portfolio",
-      "title": "This portfolio",
-      "meta": "Next.js · TypeScript · static export",
+      "id": "marmotta",
+      "name": "Marmotta",
+      "repo": "napi-bindings/marmotta",
+      "language": "JavaScript",
+      "date": "2026-10-21",
       "body": {
-        "en": "The professional page, two CV tracks, the IDOR lab and the accessibility pass that follows.",
-        "it": "La pagina professionale, due CV, il lab IDOR e il passaggio di accessibilità che segue."
+        "en": "Ongoing upstream work on the toolchain, build reliability and tests.",
+        "it": "Lavoro upstream continuo su toolchain, affidabilità della build e test."
       },
-      "href": "https://github.com/ErRusso/errusso.github.io"
+      "href": "https://github.com/napi-bindings/marmotta"
     },
     {
-      "id": "security-lab",
-      "title": "Security lab",
-      "meta": "BOLA/IDOR · published",
+      "id": "nicknaso-libgs",
+      "name": "libgs",
+      "repo": "NickNaso/libgs",
+      "language": "JavaScript",
+      "date": "2026-10-19",
       "body": {
-        "en": "One local invoicing API with a BOLA/IDOR: reproduction, impact, fix and a regression test. Labelled training, not a client finding.",
-        "it": "Un'API locale di fatture con BOLA/IDOR: riproduzione, impatto, fix e test di regressione. Etichettato come formazione, non come finding su un cliente."
+        "en": "Ghoscript static libraries",
+        "it": "Ghoscript static libraries"
       },
-      "href": {
-        "en": "/security/lab-idor/",
-        "it": "/it/security/lab-idor/"
-      },
-      "cta": {
-        "en": "Lab",
-        "it": "Lab"
-      }
+      "href": "https://github.com/NickNaso/libgs"
     }
   ],
-  "release": {
-    "name": "v1.2.0",
-    "date": "2026-10-21",
-    "meta": {
-      "en": "Latest release · MIT · v1.2.0",
-      "it": "Ultima release · MIT · v1.2.0"
-    },
-    "body": {
-      "en": "v1.2.0 is out. See the release notes for the changes.",
-      "it": "v1.2.0 è disponibile. Vedi le note di release per le modifiche."
-    },
-    "href": "https://github.com/ErRusso/pipeduck/releases/tag/v1.2.0"
+  "issues": {
+    "done": [
+      {
+        "id": "errusso-pipeduck-30",
+        "repo": "pipeduck",
+        "number": 30,
+        "title": "[P3] Disable tray trigger, source and microphone editing while ducking is on",
+        "date": "2026-10-21",
+        "href": "https://github.com/ErRusso/pipeduck/issues/30"
+      },
+      {
+        "id": "errusso-pipeduck-28",
+        "repo": "pipeduck",
+        "number": 28,
+        "title": "[P3] Add configurable ducking profiles",
+        "date": "2026-10-21",
+        "href": "https://github.com/ErRusso/pipeduck/issues/28"
+      },
+      {
+        "id": "errusso-pipeduck-18",
+        "repo": "pipeduck",
+        "number": 18,
+        "title": "[P2] Avoid blocking pactl fallbacks in the audio control tick",
+        "date": "2026-10-21",
+        "href": "https://github.com/ErRusso/pipeduck/issues/18"
+      },
+      {
+        "id": "errusso-pipeduck-17",
+        "repo": "pipeduck",
+        "number": 17,
+        "title": "[P2] Recover when the virtual sink or monitor links disappear",
+        "date": "2026-10-21",
+        "href": "https://github.com/ErRusso/pipeduck/issues/17"
+      },
+      {
+        "id": "errusso-pipeduck-19",
+        "repo": "pipeduck",
+        "number": 19,
+        "title": "[P1] Add Recovering/Degraded tray states instead of false ON status",
+        "date": "2026-10-21",
+        "href": "https://github.com/ErRusso/pipeduck/issues/19"
+      }
+    ],
+    "next": [
+      {
+        "id": "errusso-pipeduck-27",
+        "repo": "pipeduck",
+        "number": 27,
+        "title": "[P3] Improve source matching across application restarts",
+        "date": "2026-10-20",
+        "href": "https://github.com/ErRusso/pipeduck/issues/27"
+      },
+      {
+        "id": "errusso-pipeduck-26",
+        "repo": "pipeduck",
+        "number": 26,
+        "title": "[P3] Add a live VAD meter and detection history",
+        "date": "2026-10-20",
+        "href": "https://github.com/ErRusso/pipeduck/issues/26"
+      },
+      {
+        "id": "errusso-pipeduck-25",
+        "repo": "pipeduck",
+        "number": 25,
+        "title": "[P3] Evaluate Debian packaging and an Arch PKGBUILD",
+        "date": "2026-10-20",
+        "href": "https://github.com/ErRusso/pipeduck/issues/25"
+      },
+      {
+        "id": "napi-bindings-marmotta-26",
+        "repo": "marmotta",
+        "number": 26,
+        "title": "Add `marmotta self-update` command for standalone binaries",
+        "date": "2026-10-19",
+        "href": "https://github.com/napi-bindings/marmotta/issues/26"
+      }
+    ]
   },
   "projectStats": {
     "marmotta": {
@@ -59,118 +134,35 @@
       "changedFiles": 15,
       "contributions": 2,
       "firstMergedOn": "2026-10-13"
+    },
+    "pipeduck": {
+      "testFunctions": 29,
+      "assertions": 431,
+      "trackedFiles": 86,
+      "cppKb": 368,
+      "buildJobs": 4
     }
   },
-  "projects": [
-    {
-      "id": "portfolio",
-      "label": "This portfolio",
-      "date": "2026-10-21",
-      "body": {
-        "en": "Full-stack/AppSec CV tracks, concrete Packly experience and a public BOLA/IDOR lab with a regression test.",
-        "it": "CV separati full-stack/AppSec, esperienza Packly concreta e un lab BOLA/IDOR pubblico con test di regressione."
-      },
-      "href": "https://github.com/ErRusso/errusso.github.io"
+  "site": {
+    "lighthouseVersion": "13.5.0",
+    "date": "2026-10-23",
+    "mobile": {
+      "performance": 96,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "transferredKb": 267,
+      "lcpSeconds": 2.8,
+      "cls": 0
     },
-    {
-      "id": "pipeduck",
-      "label": "PipeDuck",
-      "date": "2026-10-20",
-      "body": {
-        "en": "Reliability and routing fixes from the audit, plus the 1.1.0 release.",
-        "it": "Fix di affidabilità e routing dall'audit, più la release 1.1.0."
-      },
-      "href": "https://github.com/ErRusso/pipeduck"
-    },
-    {
-      "id": "marmotta",
-      "label": "Marmotta",
-      "date": "2026-10-19",
-      "body": {
-        "en": "Ongoing upstream work on the toolchain, build reliability and tests.",
-        "it": "Lavoro upstream continuo su toolchain, affidabilità della build e test."
-      },
-      "href": "https://github.com/napi-bindings/marmotta"
+    "desktop": {
+      "performance": 100,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "transferredKb": 358,
+      "lcpSeconds": 0.6,
+      "cls": 0
     }
-  ],
-  "goals": [
-    {
-      "id": "pipeduck-1-1",
-      "status": "done",
-      "date": "2026-10-19",
-      "body": {
-        "en": "Ship PipeDuck 1.1.0.",
-        "it": "Pubblicare PipeDuck 1.1.0."
-      }
-    },
-    {
-      "id": "marmotta-contribution",
-      "status": "done",
-      "date": "2026-10-13",
-      "body": {
-        "en": "Contribute to an external open-source project.",
-        "it": "Contribuire a un progetto open source esterno."
-      }
-    },
-    {
-      "id": "profile-cv",
-      "status": "done",
-      "date": "2026-10-21",
-      "body": {
-        "en": "Publish the professional page and two CV tracks in both languages.",
-        "it": "Pubblicare la pagina professionale e due CV in entrambe le lingue."
-      }
-    },
-    {
-      "id": "security-writeup",
-      "status": "done",
-      "body": {
-        "en": "Publish one security lab end to end.",
-        "it": "Pubblicare un laboratorio di sicurezza da capo a fondo."
-      },
-      "date": "2026-10-21"
-    },
-    {
-      "id": "pipeduck-threat-model",
-      "status": "next",
-      "body": {
-        "en": "Threat-model the PipeDuck tray/D-Bus surface.",
-        "it": "Fare il threat model della superficie tray/D-Bus di PipeDuck."
-      }
-    }
-  ],
-  "studying": [
-    {
-      "id": "web-security",
-      "title": "Web security",
-      "body": {
-        "en": "OWASP Top 10, CTF labs, BOLA/IDOR practice, bug-bounty basics. Practice over certificates.",
-        "it": "OWASP Top 10, laboratori CTF, pratica BOLA/IDOR, basi di bug bounty. Pratica prima dei certificati."
-      }
-    },
-    {
-      "id": "systems",
-      "title": "Systems",
-      "body": {
-        "en": "C++20, PipeWire and libpulse internals, GTK4. The PipeDuck stack.",
-        "it": "C++20, interni di PipeWire e libpulse, GTK4. Lo stack di PipeDuck."
-      }
-    },
-    {
-      "id": "zig-node-api",
-      "title": "Zig + Node-API",
-      "body": {
-        "en": "Learned through the Marmotta contribution: toolchains, caches, native-addon builds.",
-        "it": "Imparati con il contributo a Marmotta: toolchain, cache, build di addon nativi."
-      }
-    },
-    {
-      "id": "postgres",
-      "title": "PostgreSQL",
-      "body": {
-        "en": "Schema design, constraints and the queries that survive the second feature.",
-        "it": "Progettazione dello schema, vincoli e query che sopravvivono alla seconda feature."
-      }
-    }
-  ]
+  }
 }

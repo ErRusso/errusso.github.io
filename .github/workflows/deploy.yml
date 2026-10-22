@@ -1,7 +1,9 @@
 name: Build and deploy
 
-# Scheduled runs keep the Now / Building stats (PipeDuck release, Marmotta
-# contributions, update date) current even when nothing is committed.
+# Scheduled runs keep the Now / Building stats (latest release, PipeDuck counts,
+# top repos, issues, Marmotta contributions, bun audit, update date) current
+# even when nothing is committed. Non-PR runs also refresh the Lighthouse
+# metrics and regenerate the CV PDFs before uploading.
 on:
   push:
     branches: [main]
@@ -51,6 +53,23 @@ jobs:
 
       - name: Build
         run: bun run build
+
+      # Lighthouse needs the built site. Audit it locally (compressed like
+      # GitHub Pages), write the numbers into content/now.json, then rebuild so
+      # the case study and its date are part of the deployed HTML.
+      - name: Sync Lighthouse metrics
+        if: github.event_name != 'pull_request'
+        run: bun run lighthouse:sync
+
+      - name: Rebuild with Lighthouse metrics
+        if: github.event_name != 'pull_request'
+        run: bun run build
+
+      # The CV PDFs are generated from the final build, so every deploy ships
+      # current downloads even when the committed PDFs are older.
+      - name: Regenerate CV PDFs
+        if: github.event_name != 'pull_request'
+        run: bun run cv:build
 
       - name: Setup Pages
         if: github.event_name != 'pull_request'

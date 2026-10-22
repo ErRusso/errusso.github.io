@@ -12,10 +12,11 @@ import { tmpdir } from "node:os";
  *
  * The script builds the site first (package.json), serves `out/`, prints the
  * full-stack and AppSec routes through headless Chromium, and writes the PDFs to
- * both `public/cv/` (source) and `out/cv/` (current local build).
+ * both `public/cv/` (source) and `out/cv/` (current build).
  *
- * It is a local authoring tool: the PDFs are committed, so CI does not need a
- * browser. Set CHROMIUM_BIN if the browser is not named `chromium` in PATH.
+ * CI runs it after the final build (`bun run cv:build`), so the deployed PDFs
+ * are regenerated on every deploy. Locally, set CHROMIUM_BIN if the browser is
+ * not one of the names detected below.
  */
 
 const root = resolve("out");
@@ -35,10 +36,21 @@ if (!existsSync(join(root, "cv/index.html"))) {
   process.exit(1);
 }
 
-const chromium = process.env.CHROMIUM_BIN || "chromium";
-const check = spawnSync("sh", ["-c", `command -v ${chromium}`], { encoding: "utf8" });
-if (check.status !== 0) {
-  console.error(`Chromium not found: ${chromium}. Set CHROMIUM_BIN to the browser binary.`);
+const candidates = [
+  process.env.CHROMIUM_BIN,
+  "chromium",
+  "chromium-browser",
+  "google-chrome-stable",
+  "google-chrome",
+  "chrome",
+].filter(Boolean);
+const chromium = candidates.find(
+  (bin) => spawnSync("which", [bin], { stdio: "ignore" }).status === 0,
+);
+if (!chromium) {
+  console.error(
+    `Chromium not found (tried ${candidates.join(", ")}). Set CHROMIUM_BIN to the browser binary.`,
+  );
   process.exit(1);
 }
 

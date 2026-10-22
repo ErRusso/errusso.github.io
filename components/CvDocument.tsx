@@ -15,6 +15,10 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 export function CvDocument({ lang, track }: { lang: Lang; track: CvTrack }) {
   const { shared, tracks } = professional[lang].cv;
   const cv = tracks[track];
+  const year = new Intl.DateTimeFormat("en", {
+    year: "numeric",
+    timeZone: "Europe/Rome",
+  }).format(new Date());
 
   return (
     <main className="cv-screen flex min-h-screen justify-start overflow-x-auto px-4 py-8 lg:justify-center print:block print:min-h-0 print:overflow-visible print:p-0">
@@ -23,7 +27,7 @@ export function CvDocument({ lang, track }: { lang: Lang; track: CvTrack }) {
           <div className="flex items-start justify-between gap-6">
             <div>
               <p className="label text-concrete">
-                {lang === "it" ? "Curriculum vitae · 2026" : "Curriculum vitae · 2026"}
+                {`Curriculum vitae · ${year}`}
               </p>
               <h1 className="mt-2 font-display text-[31pt] font-black uppercase leading-[0.8] tracking-[-0.045em]">
                 Simone
@@ -162,7 +166,7 @@ export function CvDocument({ lang, track }: { lang: Lang; track: CvTrack }) {
 
         <footer className="mt-4 flex items-center justify-between gap-4 border-t border-ink pt-2 text-[7.5pt] text-ink/60">
           <span>{shared.footer}</span>
-          <span className="label text-violet">SR / 2026</span>
+          <span className="label text-violet">SR / {year}</span>
         </footer>
       </article>
     </main>
