@@ -66,9 +66,10 @@ jobs:
         run: bun run build
 
       # The CV PDFs are generated from the final build, so every deploy ships
-      # current downloads even when the committed PDFs are older.
+      # current downloads even when the committed PDFs are older. Run this on
+      # pull requests too: it is the only place the browser launcher is
+      # exercised before merge.
       - name: Regenerate CV PDFs
-        if: github.event_name != 'pull_request'
         run: bun run cv:build
 
       - name: Setup Pages
