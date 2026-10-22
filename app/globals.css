@@ -1,0 +1,737 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0b0b0c;
+  --color-paper: #f3f0e9;
+  --color-paper-dim: #e8e4da;
+  --color-violet: #6b27db;
+  --color-violet-soft: #9d6bff;
+  --color-concrete: #6f6c67;
+  --color-red: #e63a1f;
+
+  /* Inverse blocks (footer, marquee, artwork) keep their own surface colour so
+     they do not turn into bright bands when the page goes dark. */
+  --color-surface: #0b0b0c;
+  --color-on-surface: #f3f0e9;
+  --color-accent-solid: #6b27db;
+  --color-on-accent: #f3f0e9;
+
+  --font-display: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", monospace;
+
+  --radius-none: 0px;
+}
+
+:root {
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-ink: #f3f0e9;
+  --color-paper: #0b0b0c;
+  --color-paper-dim: #151517;
+  --color-violet: #9d6bff;
+  --color-violet-soft: #c0a4ff;
+  --color-concrete: #a09c96;
+  --color-surface: #141416;
+  --color-on-surface: #f3f0e9;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Custom scrollbar: ink on paper, violet on hover. Firefox gets the standard
+     properties, Chromium/Safari the pseudo-elements (setting both would make
+     Chrome ignore the ::-webkit- rules). */
+  @supports not selector(::-webkit-scrollbar) {
+    html {
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-ink) var(--color-paper);
+    }
+  }
+
+  @supports selector(::-webkit-scrollbar) {
+    html::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    html::-webkit-scrollbar-track {
+      background: var(--color-paper);
+      border-left: 1px solid color-mix(in srgb, var(--color-ink) 16%, transparent);
+    }
+
+    html::-webkit-scrollbar-thumb {
+      background: var(--color-ink);
+      border: 2px solid var(--color-paper);
+      border-radius: 0;
+    }
+
+    html::-webkit-scrollbar-thumb:hover,
+    html::-webkit-scrollbar-thumb:active {
+      background: var(--color-violet);
+    }
+
+    html::-webkit-scrollbar-corner {
+      background: var(--color-paper);
+    }
+  }
+
+  section[id] {
+    scroll-margin-top: 4.5rem;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-violet);
+    color: var(--color-paper);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-violet);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+@layer components {
+  .label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.1;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .label-lg {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.2;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .hard-shadow {
+    box-shadow: 8px 8px 0 0 var(--color-ink);
+  }
+
+  .hard-shadow-violet {
+    box-shadow: 8px 8px 0 0 var(--color-violet);
+  }
+
+  .grid-paper {
+    background-image:
+      linear-gradient(to right, color-mix(in srgb, var(--color-ink) 8%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--color-ink) 8%, transparent) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .grid-ink {
+    background-image:
+      linear-gradient(to right, color-mix(in srgb, var(--color-paper) 10%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--color-paper) 10%, transparent) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 2px;
+    transition: color 0.12s linear, background-color 0.12s linear;
+  }
+
+  .link-arrow:hover {
+    color: var(--color-violet);
+  }
+
+  .reveal-hidden {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity 0.32s steps(4, end),
+      transform 0.32s steps(4, end);
+    will-change: opacity, transform;
+  }
+
+  .reveal-in {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 42s linear infinite;
+}
+
+/* The ticker must never pause: pausing on hover/click and resuming from the
+   same point reads as a stutter, not as a feature. It only stops for users
+   who prefer reduced motion (see the media query below). */
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.cursor-block {
+  display: inline-block;
+  animation: blink 1.2s steps(1, end) infinite;
+}
+
+/* Hero accent word: on hover the letters take a hit and break apart. Only
+   transforms animate, so the headline never reflows. */
+.hero-break {
+  display: inline-block;
+}
+
+.hero-break-letter {
+  display: inline-block;
+  transform-origin: center;
+}
+
+@keyframes hero-break-hit {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-0.012em, 0.009em);
+  }
+  50% {
+    transform: translate(0.014em, -0.007em);
+  }
+  75% {
+    transform: translate(-0.006em, 0.004em);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-break-letter {
+    will-change: transform;
+    transition: transform 200ms cubic-bezier(0.24, 1.2, 0.32, 1);
+    transition-delay: var(--break-delay, 0ms);
+  }
+
+  .hero-break:hover {
+    animation: hero-break-hit 170ms steps(4, end) 1;
+  }
+
+  .hero-break:hover .hero-break-letter {
+    transform: translate(var(--break-x, 0em), var(--break-y, 0em))
+      rotate(var(--break-rotate, 0deg));
+  }
+}
+
+/* Contact email: the violet slab sweeps in, the letters take a signal hit,
+   the arrow snaps. Under reduced motion the hover state still changes (slab
+   + paper text) but nothing moves. */
+.contact-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--color-violet);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.contact-email,
+.contact-arrow {
+  position: relative;
+  z-index: 1;
+  color: var(--color-ink);
+}
+
+.contact-letter {
+  display: inline-block;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .contact-link:hover .contact-fill {
+    transform: scaleX(1);
+  }
+
+  .contact-link:hover .contact-email,
+  .contact-link:hover .contact-arrow {
+    color: var(--color-paper);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .contact-fill {
+    transition: transform 320ms linear 80ms;
+  }
+
+  .contact-link:hover .contact-fill {
+    transition-delay: 0ms;
+  }
+
+  .contact-email {
+    transition: color 100ms linear;
+  }
+
+  .contact-link:hover .contact-email {
+    transition-delay: 320ms;
+  }
+
+  .contact-arrow {
+    transition:
+      color 100ms linear,
+      transform 180ms steps(2, end);
+  }
+
+  .contact-link:hover .contact-arrow {
+    transform: translateX(12px);
+    transition-delay: 320ms, 0ms;
+  }
+
+  .contact-link:hover .contact-letter {
+    animation: contact-jolt 200ms steps(1, end) calc(var(--i, 0) * 11ms) 1;
+  }
+}
+
+@keyframes contact-jolt {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  18% {
+    transform: translate(-0.04em, 0.035em);
+  }
+  36% {
+    transform: translate(0.045em, -0.028em);
+  }
+  54% {
+    transform: translate(-0.032em, -0.042em);
+  }
+  72% {
+    transform: translate(0.038em, 0.024em);
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.6);
+    opacity: 0.5;
+  }
+}
+
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-violet);
+  animation: pulse-dot 2.4s ease-in-out infinite;
+}
+
+/* Theme toggle icon: swapped with CSS, so the button markup never changes
+   between server and client (no hydration mismatch, no flash). */
+.theme-icon-dark {
+  display: none;
+}
+
+[data-theme="dark"] .theme-icon-light {
+  display: none;
+}
+
+[data-theme="dark"] .theme-icon-dark {
+  display: block;
+}
+
+/* Theme switch: fallback disc (browsers without View Transitions). One fixed
+   disc, centred on the toggle button and big enough to cover the farthest
+   viewport corner, grows to cover the page, then shrinks away.
+
+   The destination paper colour is frozen as a literal by lib/wipe.ts: a live
+   var(--color-ink) flips with data-theme and would flash over the old page
+   just before the reveal. Physical size and centre also come from JS; this
+   class only sets the look. Transform-scale keeps the disc round and stable. */
+.theme-wipe {
+  position: fixed;
+  z-index: 9998; /* under the custom cursor (9999), over every section */
+  border-radius: 50%;
+  background-color: var(--color-ink);
+  transform: translate(-50%, -50%) scale(0);
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* Language switch: a solid ink panel carrying the destination language rises
+   over the page, then keeps travelling up to reveal the next page. The page
+   content itself slides a few pixels in the direction of the switch, so the
+   whole move reads as one gesture instead of a reload.
+
+   The panel is a pseudo-element of <html>: the attributes are set by inline
+   script before first paint on the incoming page (lib/lang.ts), so there is no
+   fully-rendered flash while React hydrates. */
+html[data-lang-exit]::after,
+html[data-lang-enter]::after {
+  content: attr(data-lang-target);
+  position: fixed;
+  inset: 0;
+  z-index: 10000; /* above every overlay, including the custom cursor */
+  display: grid;
+  place-items: center;
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-display);
+  font-size: clamp(7rem, 34vw, 22rem);
+  font-weight: 900;
+  line-height: 0.8;
+  letter-spacing: -0.07em;
+  pointer-events: none;
+  will-change: transform;
+}
+
+html[data-lang-exit]::after {
+  animation: lang-panel-in 420ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+html[data-lang-enter]::after {
+  animation: lang-panel-out 620ms cubic-bezier(0.33, 1, 0.68, 1) both;
+}
+
+html[data-lang-exit] main,
+html[data-lang-exit] body > header,
+html[data-lang-exit] body > footer {
+  animation: lang-page-out 420ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+html[data-lang-enter] main,
+html[data-lang-enter] body > header,
+html[data-lang-enter] body > footer {
+  animation: lang-page-in 620ms cubic-bezier(0.33, 1, 0.68, 1) both;
+}
+
+@keyframes lang-panel-in {
+  from {
+    transform: translateY(101%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes lang-panel-out {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-101%);
+  }
+}
+
+@keyframes lang-page-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0.5;
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes lang-page-in {
+  from {
+    opacity: 0.5;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-lang-exit]::after,
+  html[data-lang-enter]::after {
+    content: none;
+    animation: none;
+  }
+
+  html[data-lang-exit] main,
+  html[data-lang-exit] body > header,
+  html[data-lang-exit] body > footer,
+  html[data-lang-enter] main,
+  html[data-lang-enter] body > header,
+  html[data-lang-enter] body > footer {
+    animation: none;
+  }
+}
+
+/* Project posters: the artwork reacts on hover, not on scroll.
+   Only transform, opacity and stroke-dashoffset animate, so the
+   browser can keep this off the layout and paint threads. */
+.poster-wave-bar,
+.poster-wire {
+  transform-box: fill-box;
+}
+
+.poster-wave-bar {
+  transform-origin: center;
+}
+
+.poster-wire {
+  transform-origin: left center;
+}
+
+.poster-zig-pulse {
+  opacity: 0;
+  stroke-dasharray: 52 640;
+}
+
+@keyframes poster-eq {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(1.32);
+  }
+}
+
+@keyframes poster-dash {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: -692;
+  }
+}
+
+@keyframes poster-wire-in {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  60% {
+    opacity: 1;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .poster:hover .poster-wave-bar,
+  .group:hover .poster-wave-bar {
+    animation: poster-eq 1.1s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 16ms);
+  }
+
+  .poster:hover .poster-zig-pulse,
+  .group:hover .poster-zig-pulse {
+    opacity: 1;
+    animation: poster-dash 2.4s linear infinite;
+  }
+
+  .poster:hover .poster-wire,
+  .group:hover .poster-wire {
+    animation: poster-wire-in 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(var(--i) * 70ms);
+  }
+}
+
+/* Custom pointer: a hard 1px box with a violet core, the same language as the
+   status dot and the block cursor. Over links it inverts (violet outline, ink
+   core) and grows a little. The native cursor is hidden only after the first
+   pointer move (data-custom-cursor), so no-JS keeps the system pointer. */
+.site-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms linear;
+  will-change: transform;
+}
+
+.site-cursor[data-visible="true"] {
+  opacity: 1;
+}
+
+.site-cursor-box {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--color-ink);
+  /* A ring in the page colour keeps the box readable on inverse surfaces
+     (the dark footer, photos, the piano's white keys). */
+  box-shadow: 0 0 0 1px var(--color-paper);
+  box-sizing: border-box;
+  transform: translate(-50%, -50%) scale(1);
+  transition:
+    transform 150ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 120ms linear;
+}
+
+.site-cursor-box::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  background: var(--color-violet);
+  transform: translate(-50%, -50%);
+  transition:
+    width 150ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    height 150ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    background-color 120ms linear;
+}
+
+.site-cursor[data-state="link"] .site-cursor-box {
+  border-color: var(--color-violet);
+  transform: translate(-50%, -50%) scale(1.18);
+}
+
+.site-cursor[data-state="link"] .site-cursor-box::before {
+  width: 5px;
+  height: 5px;
+  background: var(--color-ink);
+}
+
+.site-cursor[data-pressed="true"] .site-cursor-box {
+  transform: translate(-50%, -50%) scale(0.82);
+}
+
+html[data-custom-cursor="on"],
+html[data-custom-cursor="on"] * {
+  cursor: none !important;
+}
+
+@media print {
+  .site-cursor {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-block,
+  .status-dot {
+    animation: none;
+  }
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/* The CV preview/print sheet. It deliberately locks the light palette so a
+   dark-mode preference does not leak into the PDF, and it removes every screen
+   affordance (shadow, page padding) before printing. */
+.cv-screen {
+  background: #dcd7cb;
+}
+
+.cv-sheet .font-display {
+  /* Keep word gaps wide enough for text/PDF extractors to preserve spaces. */
+  word-spacing: 0.2em;
+}
+
+.cv-sheet {
+  --color-ink: #0b0b0c;
+  --color-paper: #f3f0e9;
+  --color-paper-dim: #e8e4da;
+  --color-violet: #6b27db;
+  --color-violet-soft: #9d6bff;
+  --color-concrete: #6f6c67;
+  color-scheme: light;
+  width: 210mm;
+  min-height: 297mm;
+  flex: 0 0 auto;
+  padding: 12mm 13mm;
+  box-sizing: border-box;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  html,
+  body {
+    background: #f3f0e9 !important;
+  }
+
+  .cv-screen {
+    display: block !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    background: #f3f0e9 !important;
+  }
+
+  .cv-sheet {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 !important;
+    box-shadow: none !important;
+  }
+}

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>404 — Simone Russo</title>
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="/favicon.svg" />
+    <style>
+      :root {
+        --ink: #0b0b0c;
+        --paper: #f3f0e9;
+        --violet: #6b27db;
+        --violet-soft: #9d6bff;
+        --red: #e63a1f;
+        --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+      }
+      header {
+        border-bottom: 1px solid var(--ink);
+        padding: 18px 20px;
+        font-family: var(--mono);
+        font-size: 13px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+      header span { color: var(--violet); }
+      header em { color: var(--red); font-style: normal; }
+      main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        max-width: 1100px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 48px 20px;
+      }
+      .code {
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.2em;
+        color: var(--violet);
+        margin: 0 0 16px;
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(2.2rem, 8vw, 6rem);
+        line-height: 0.88;
+        letter-spacing: -0.045em;
+        text-transform: uppercase;
+        font-weight: 900;
+      }
+      h1 .red { color: var(--red); }
+      p {
+        max-width: 46ch;
+        margin: 24px 0 0;
+        font-size: 1.05rem;
+        line-height: 1.6;
+      }
+      nav { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+      a {
+        display: inline-block;
+        border: 1px solid var(--ink);
+        padding: 12px 18px;
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: inherit;
+        text-decoration: none;
+      }
+      a:hover { background: var(--ink); color: var(--paper); }
+      a.primary { background: var(--violet); border-color: var(--violet); color: var(--paper); }
+      a.primary:hover { background: var(--ink); border-color: var(--ink); }
+      footer {
+        border-top: 1px solid var(--ink);
+        padding: 16px 20px;
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #8c8a85;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --ink: #f3f0e9;
+          --paper: #0b0b0c;
+          --violet: #9d6bff;
+          --violet-soft: #c0a4ff;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>Simone <em>Russo</em><span>▮</span></header>
+    <main>
+      <p class="code">404 / NOT FOUND</p>
+      <h1>This page does not compile.<br /><span class="red">Russo, ma in rosso.</span></h1>
+      <p>
+        The link is broken, moved, or never existed. That is not a bug, it is a feature of the
+        internet. <br />
+        <span lang="it">Il link è rotto, spostato o non è mai esistito.</span>
+      </p>
+      <nav>
+        <a class="primary" href="/">← English home</a>
+        <a href="/it/">Home in italiano</a>
+      </nav>
+    </main>
+    <footer>© 2026 Simone Russo · Built with Next.js. The irony is intentional.</footer>
+  </body>
+</html>
