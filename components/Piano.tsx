@@ -23,10 +23,13 @@ const BLACK_KEYS = [
 
 const LETTERS = ["a", "s", "d", "f", "g", "h", "j", "k"];
 
-// Geometry of the mini keyboard: 20px white keys, 2px gaps, 12px black keys.
-const WHITE_WIDTH = 20;
+// Geometry of the mini keyboard: 24px white keys, 2px gaps, 12px black keys
+// drawn over them. The whole keyboard is one pointer target, with A–K as the
+// keyboard path, so individual 12px keys do not fail target-size.
+const WHITE_WIDTH = 24;
 const GAP = 2;
 const BLACK_WIDTH = 12;
+const BLACK_HEIGHT = 22;
 
 type AudioContextCtor = typeof AudioContext;
 
@@ -123,41 +126,58 @@ export function Piano({ label, onLabel, hint }: { label: string; onLabel: string
 
       <div
         role="group"
-        aria-label={label}
-        className={`relative flex w-fit gap-[2px] transition-opacity duration-150 ${enabled ? "" : "opacity-70"}`}
-      >
-        {WHITE_KEYS.map((note) => {
-          const isActive = active === note.name;
-          return (
-            <button
-              key={note.name}
-              type="button"
-              aria-label={note.name}
-              onClick={() => strike(note.frequency, note.name)}
-              className={`relative h-9 w-5 transition-colors duration-75 ${
-                isActive ? "bg-violet-soft" : "bg-on-surface hover:bg-violet-soft/40"
-              }`}
-            />
-          );
-        })}
+        aria-label={`${label}. ${hint}`}
+        onPointerDown={(event) => {
+          const rect = event.currentTarget.getBoundingClientRect();
+          const x = event.clientX - rect.left;
+          const y = event.clientY - rect.top;
 
-        {BLACK_KEYS.map((note) => {
-          const isActive = active === note.name;
-          return (
-            <button
-              key={note.name}
-              type="button"
-              aria-label={note.name}
-              onClick={() => strike(note.frequency, note.name)}
-              style={{ left: (note.after + 1) * (WHITE_WIDTH + GAP) - BLACK_WIDTH / 2 }}
-              className={`absolute top-0 z-10 h-[22px] w-3 border transition-colors duration-75 ${
-                isActive
-                  ? "border-violet-soft bg-violet-soft"
-                  : "border-on-surface/20 bg-surface hover:border-violet-soft hover:bg-on-surface/10"
-              }`}
-            />
+          if (y <= BLACK_HEIGHT) {
+            for (const note of BLACK_KEYS) {
+              const left = (note.after + 1) * (WHITE_WIDTH + GAP) - BLACK_WIDTH / 2;
+              if (x >= left && x <= left + BLACK_WIDTH) {
+                strike(note.frequency, note.name);
+                return;
+              }
+            }
+          }
+
+          const index = Math.max(
+            0,
+            Math.min(
+              Math.floor(x / (WHITE_WIDTH + GAP)),
+              WHITE_KEYS.length - 1,
+            ),
           );
-        })}
+          const note = WHITE_KEYS[index];
+          strike(note.frequency, note.name);
+        }}
+        className={`relative flex w-fit cursor-pointer touch-none select-none gap-[2px] transition-opacity duration-150 ${enabled ? "" : "opacity-70"}`}
+      >
+        {WHITE_KEYS.map((note) => (
+          <span
+            key={note.name}
+            aria-hidden
+            className={`h-9 w-6 transition-colors duration-75 ${
+              active === note.name
+                ? "bg-violet-soft"
+                : "bg-on-surface hover:bg-violet-soft/40"
+            }`}
+          />
+        ))}
+
+        {BLACK_KEYS.map((note) => (
+          <span
+            key={note.name}
+            aria-hidden
+            style={{ left: (note.after + 1) * (WHITE_WIDTH + GAP) - BLACK_WIDTH / 2 }}
+            className={`absolute top-0 z-10 h-[22px] w-3 border transition-colors duration-75 ${
+              active === note.name
+                ? "border-violet-soft bg-violet-soft"
+                : "border-on-surface/20 bg-surface hover:border-violet-soft hover:bg-on-surface/10"
+            }`}
+          />
+        ))}
       </div>
     </div>
   );

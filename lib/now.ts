@@ -3,29 +3,41 @@ import type { Lang } from "@/lib/i18n";
 
 type Bilingual = Record<Lang, string>;
 
-export type NowBuilding = {
+export type NowRepo = {
   id: string;
-  title: string;
-  meta: string;
+  name: string;
+  /** owner/name on GitHub. */
+  repo: string;
+  language: string;
+  /** Last push, used as the "last activity" date. */
+  date: string;
   body: Bilingual;
-  href?: string | Bilingual;
-  cta?: Bilingual;
+  href: string;
+};
+
+export type NowIssue = {
+  id: string;
+  /** Repository name without the owner, used as the issue context. */
+  repo: string;
+  number: number;
+  title: string;
+  /** Closed date for done issues, opened date for upcoming ones. */
+  date: string;
+  href: string;
 };
 
 export type NowRelease = {
+  tag: string;
+  /** Tag without the leading v, e.g. "1.2.0". */
+  version: string;
   name: string;
   date: string;
-  meta: Bilingual;
-  body: Bilingual;
   href: string;
 };
 
-export type NowProject = {
-  id: string;
-  label: string;
-  date: string;
-  body: Bilingual;
-  href: string;
+export type NowAudit = {
+  packages: number;
+  vulnerabilities: number;
 };
 
 export type NowProjectStats = {
@@ -36,27 +48,44 @@ export type NowProjectStats = {
   firstMergedOn: string;
 };
 
-export type NowGoal = {
-  id: string;
-  status: "done" | "active" | "next";
-  date?: string;
-  body: Bilingual;
+export type NowPipeduckStats = {
+  testFunctions: number;
+  assertions: number;
+  trackedFiles: number;
+  cppKb: number;
+  /** Instances of the gcc/clang × GUI build matrix in the latest CI run. */
+  buildJobs?: number;
 };
 
-export type NowStudy = {
-  id: string;
-  title: string;
-  body: Bilingual;
+export type NowSiteMetrics = {
+  performance: number;
+  accessibility: number;
+  bestPractices: number;
+  seo: number;
+  transferredKb: number;
+  lcpSeconds: number;
+  cls: number;
+};
+
+export type NowSite = {
+  lighthouseVersion: string;
+  date: string;
+  mobile: NowSiteMetrics;
+  desktop: NowSiteMetrics;
 };
 
 export type NowData = {
   updated: string;
-  building: NowBuilding[];
   release: NowRelease;
-  projects: NowProject[];
-  projectStats: { marmotta: NowProjectStats };
-  goals: NowGoal[];
-  studying: NowStudy[];
+  audit: NowAudit;
+  repos: NowRepo[];
+  issues: { done: NowIssue[]; next: NowIssue[] };
+  projectStats: {
+    marmotta?: NowProjectStats;
+    pipeduck?: NowPipeduckStats;
+  };
+  /** Written by scripts/lighthouse-sync.mjs after the first build. */
+  site?: NowSite;
 };
 
 /** Single source for the Now / Building blocks on the home and profile pages. */

@@ -89,16 +89,16 @@ export type ProfessionalCopy = {
     title: string;
     intro: string;
     labels: {
-      building: string;
-      release: string;
-      projects: string;
-      goals: string;
-      studying: string;
+      repos: string;
+      reposNote: string;
+      done: string;
+      next: string;
+      lastPush: string;
+      open: string;
+      nothingDone: string;
+      nothingNext: string;
       updated: string;
       all: string;
-      statusDone: string;
-      statusActive: string;
-      statusNext: string;
     };
   };
   timeline: { number: string; title: string; intro: string; items: TimelineItem[] };
@@ -128,16 +128,41 @@ export type ProfessionalCopy = {
 };
 
 const pipeduckRepo = "https://github.com/ErRusso/pipeduck";
-const pipeduckRelease = `${pipeduckRepo}/releases/tag/v1.1.0`;
+const pipeduckVersion = now.release.version;
+const pipeduckRelease = now.release.href;
 const pipeduckLatestRelease = `${pipeduckRepo}/releases/latest`;
 const marmottaRepo = "https://github.com/napi-bindings/marmotta";
 const marmottaStats = now.projectStats?.marmotta;
+const pipeduckStats = now.projectStats?.pipeduck ?? {
+  testFunctions: 29,
+  assertions: 431,
+  trackedFiles: 86,
+  cppKb: 368,
+  buildJobs: 4,
+};
+const pipeduckBuildJobs = pipeduckStats.buildJobs ?? 4;
 const marmottaDiff = marmottaStats
   ? `+${marmottaStats.additions} / −${marmottaStats.deletions}`
   : "+165 / −11";
 const marmottaFiles = marmottaStats?.changedFiles ?? 6;
 const labPageEn = `${site.url}/security/lab-idor/`;
 const labPageIt = `${site.url}/it/security/lab-idor/`;
+
+function monthYear(value: string | Date, lang: Lang): string {
+  const date = typeof value === "string" ? new Date(`${value}T12:00:00Z`) : value;
+  return new Intl.DateTimeFormat(lang === "it" ? "it-IT" : "en-GB", {
+    month: "long",
+    year: "numeric",
+    timeZone: "Europe/Rome",
+  }).format(date);
+}
+
+const updatedEn = monthYear(now.updated, "en");
+const updatedIt = monthYear(now.updated, "it");
+// The PDFs are regenerated on every deploy, so the CV footer follows the
+// build date; the hero "Updated" value follows the data snapshot.
+const cvUpdatedEn = monthYear(new Date(), "en");
+const cvUpdatedIt = monthYear(new Date(), "it");
 export const labSource = `${site.repo}/tree/main/labs/idor`;
 
 export const professional: Record<Lang, ProfessionalCopy> = {
@@ -160,24 +185,25 @@ export const professional: Record<Lang, ProfessionalCopy> = {
         { key: "Focus", value: "TypeScript · Node · PostgreSQL" },
         { key: "Security", value: "OWASP · threat modeling · CTF" },
         { key: "Studying", value: "BSc Computer Science, UniMol" },
-        { key: "Updated", value: "October 2026" },
+        { key: "Updated", value: updatedEn },
       ],
     },
     now: {
       number: "NOW",
       title: "Now / Building",
-      intro: "A manually curated snapshot. No contribution graph, no vanity metrics.",
+      intro:
+        "A live snapshot from GitHub: the repositories I am working in, the issues I closed, and the ones still open.",
       labels: {
-        building: "In development",
-        release: "Latest release",
-        projects: "Projects",
-        goals: "This month",
-        studying: "Studying now",
+        repos: "Repos in use",
+        reposNote: "Top 3, this site excluded",
+        done: "Done",
+        next: "To do",
+        lastPush: "Last push",
+        open: "Open repo",
+        nothingDone: "No issues closed yet.",
+        nothingNext: "Nothing open right now.",
         updated: "Last updated",
         all: "Full profile & CV",
-        statusDone: "Done",
-        statusActive: "Active",
-        statusNext: "Next",
       },
     },
     timeline: {
@@ -329,15 +355,15 @@ export const professional: Record<Lang, ProfessionalCopy> = {
           period: "19 OCT 2026",
           role: "Creator & maintainer",
           org: "PipeDuck",
-          meta: "MIT · v1.1.0",
-          body: "C++20 PipeWire ducking daemon with smooth return fades and microphone-triggered ducking. v1.1.0 moved state reading to a single libpulse event subscription and added live tray menus.",
+          meta: `MIT · v${pipeduckVersion}`,
+          body: "C++20 PipeWire ducking daemon with smooth return fades and microphone-triggered ducking. The 1.x line moved state reading to a single libpulse event subscription and added live tray menus.",
           bullets: [
-            "24 test functions · 4 CI jobs.",
+            `${pipeduckStats.testFunctions} test functions · ${pipeduckBuildJobs} build jobs.`,
             "DBusMenu/StatusNotifierItem integration tests under dbus-run-session.",
           ],
           links: [
             { label: "Repository", href: pipeduckRepo },
-            { label: "Release v1.1.0", href: pipeduckRelease },
+            { label: `Release v${pipeduckVersion}`, href: pipeduckRelease },
           ],
         },
         {
@@ -410,11 +436,11 @@ export const professional: Record<Lang, ProfessionalCopy> = {
           { label: "Portfolio", href: site.url },
           { label: "GitHub", href: site.github },
           { label: "Security lab", href: labPageEn },
-          { label: "PipeDuck v1.1.0", href: pipeduckRelease },
+          { label: `PipeDuck v${pipeduckVersion}`, href: pipeduckRelease },
           { label: "Marmotta", href: marmottaRepo },
         ],
         languages: "Italian — native · English — working proficiency.",
-        footer: "CV updated October 2026 · errusso.github.io",
+        footer: `CV updated ${cvUpdatedEn} · errusso.github.io`,
       },
       tracks: {
         fullstack: {
@@ -455,10 +481,10 @@ export const professional: Record<Lang, ProfessionalCopy> = {
               period: "Oct 2026",
               role: "Creator & maintainer",
               org: "PipeDuck",
-              meta: "MIT · v1.1.0",
+              meta: `MIT · v${pipeduckVersion}`,
               bullets: [
                 "C++20 PipeWire ducking daemon with event-driven libpulse state, smooth return fades and microphone triggering.",
-                "GTK4 tray, DBusMenu integration tests and CI matrix; 24 test functions across 4 CI jobs.",
+                `GTK4 tray, DBusMenu integration tests and CI matrix; ${pipeduckStats.testFunctions} test functions across ${pipeduckBuildJobs} build jobs.`,
               ],
               links: [
                 { label: "Repository", href: pipeduckRepo },
@@ -535,7 +561,7 @@ export const professional: Record<Lang, ProfessionalCopy> = {
               period: "Oct 2026",
               role: "Creator & maintainer",
               org: "PipeDuck",
-              meta: "MIT · v1.1.0",
+              meta: `MIT · v${pipeduckVersion}`,
               bullets: [
                 "TOML config validation, threshold clamping and hot reload; unit tests cover parsing and routing invariants.",
                 "Threat-modeled audio-routing failure paths; tray/D-Bus surface remains open and is documented.",
@@ -578,24 +604,25 @@ export const professional: Record<Lang, ProfessionalCopy> = {
         { key: "Focus", value: "TypeScript · Node · PostgreSQL" },
         { key: "Sicurezza", value: "OWASP · threat modeling · CTF" },
         { key: "Studio", value: "Laurea in Informatica, UniMol" },
-        { key: "Aggiornato", value: "Ottobre 2026" },
+        { key: "Aggiornato", value: updatedIt },
       ],
     },
     now: {
       number: "ORA",
       title: "Ora / In costruzione",
-      intro: "Un'istantanea curata a mano. Niente grafici di contributi, niente metriche da vetrina.",
+      intro:
+        "Un'istantanea live da GitHub: i repository su cui sto lavorando, le issue chiuse e quelle ancora aperte.",
       labels: {
-        building: "In sviluppo",
-        release: "Ultima release",
-        projects: "Progetti",
-        goals: "Questo mese",
-        studying: "In studio",
+        repos: "Repo in uso",
+        reposNote: "I 3 più attivi, escluso questo sito",
+        done: "Fatte",
+        next: "Da fare",
+        lastPush: "Ultimo push",
+        open: "Apri repo",
+        nothingDone: "Nessuna issue chiusa finora.",
+        nothingNext: "Niente in sospeso al momento.",
         updated: "Ultimo aggiornamento",
         all: "Profilo completo e CV",
-        statusDone: "Fatto",
-        statusActive: "In corso",
-        statusNext: "Prossimo",
       },
     },
     timeline: {
@@ -747,15 +774,15 @@ export const professional: Record<Lang, ProfessionalCopy> = {
           period: "19 OTT 2026",
           role: "Creatore e maintainer",
           org: "PipeDuck",
-          meta: "MIT · v1.1.0",
-          body: "Daemon di ducking audio per PipeWire in C++20, con fade di ritorno morbidi e attivazione da microfono. La v1.1.0 legge lo stato da una singola sottoscrizione eventi libpulse e aggiunge menu della tray aggiornati.",
+          meta: `MIT · v${pipeduckVersion}`,
+          body: "Daemon di ducking audio per PipeWire in C++20, con fade di ritorno morbidi e attivazione da microfono. La linea 1.x legge lo stato da una singola sottoscrizione eventi libpulse e aggiunge menu della tray aggiornati.",
           bullets: [
-            "24 funzioni di test · 4 job CI.",
+            `${pipeduckStats.testFunctions} funzioni di test · ${pipeduckBuildJobs} job di build.`,
             "Test di integrazione DBusMenu/StatusNotifierItem sotto dbus-run-session.",
           ],
           links: [
             { label: "Repository", href: pipeduckRepo },
-            { label: "Release v1.1.0", href: pipeduckRelease },
+            { label: `Release v${pipeduckVersion}`, href: pipeduckRelease },
           ],
         },
         {
@@ -828,11 +855,11 @@ export const professional: Record<Lang, ProfessionalCopy> = {
           { label: "Portfolio", href: site.url },
           { label: "GitHub", href: site.github },
           { label: "Lab di sicurezza", href: labPageIt },
-          { label: "PipeDuck v1.1.0", href: pipeduckRelease },
+          { label: `PipeDuck v${pipeduckVersion}`, href: pipeduckRelease },
           { label: "Marmotta", href: marmottaRepo },
         ],
         languages: "Italiano — madrelingua · Inglese — livello professionale.",
-        footer: "CV aggiornato a ottobre 2026 · errusso.github.io",
+        footer: `CV aggiornato a ${cvUpdatedIt} · errusso.github.io`,
       },
       tracks: {
         fullstack: {
@@ -873,10 +900,10 @@ export const professional: Record<Lang, ProfessionalCopy> = {
               period: "Ott 2026",
               role: "Creatore e maintainer",
               org: "PipeDuck",
-              meta: "MIT · v1.1.0",
+              meta: `MIT · v${pipeduckVersion}`,
               bullets: [
                 "Daemon di ducking audio per PipeWire in C++20 con stato libpulse event-driven, fade di ritorno morbidi e attivazione da microfono.",
-                "Tray GTK4, test di integrazione DBusMenu e matrice CI; 24 funzioni di test su 4 job CI.",
+                `Tray GTK4, test di integrazione DBusMenu e matrice CI; ${pipeduckStats.testFunctions} funzioni di test su ${pipeduckBuildJobs} job di build.`,
               ],
               links: [
                 { label: "Repository", href: pipeduckRepo },
@@ -953,7 +980,7 @@ export const professional: Record<Lang, ProfessionalCopy> = {
               period: "Ott 2026",
               role: "Creatore e maintainer",
               org: "PipeDuck",
-              meta: "MIT · v1.1.0",
+              meta: `MIT · v${pipeduckVersion}`,
               bullets: [
                 "Validazione config TOML, clamping delle soglie e hot reload; i test unitari coprono parsing e invarianti di routing.",
                 "Threat model dei percorsi di errore del routing audio; superficie tray/D-Bus ancora aperta e documentata.",

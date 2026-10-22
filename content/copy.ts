@@ -1,5 +1,10 @@
 import type { Lang } from "@/lib/i18n";
 
+const year = new Intl.DateTimeFormat("en", {
+  year: "numeric",
+  timeZone: "Europe/Rome",
+}).format(new Date());
+
 export type LoadoutItem = { key: string; value: string };
 
 export type ServiceItem = {
@@ -239,7 +244,7 @@ export const copy: Record<Lang, Copy> = {
         { key: "Karting", value: "KZ 125 · K9C" },
         { key: "Piano", value: "Since secondary school" },
         { key: "Cinema", value: "Tarantino, chapter by chapter" },
-        { key: "Now", value: "CTFs, bug bounty, PipeDuck v1" },
+        { key: "Now", value: "CTFs, bug bounty, PipeDuck" },
       ],
       portrait: {
         label: "Portrait",
@@ -271,7 +276,7 @@ export const copy: Record<Lang, Copy> = {
       built: "Built with Next.js. The irony is intentional.",
       source: "Source",
       lap: "Lap time",
-      rights: "© 2026 Simone Russo",
+      rights: `© ${year} Simone Russo`,
       top: "Back to top",
       piano: "Piano",
       pianoOn: "Keys on",
@@ -436,7 +441,7 @@ export const copy: Record<Lang, Copy> = {
         { key: "Kart", value: "KZ 125 · K9C" },
         { key: "Pianoforte", value: "Dalla terza media" },
         { key: "Cinema", value: "Tarantino, capitolo per capitolo" },
-        { key: "Ora", value: "CTF, bug bounty, PipeDuck v1" },
+        { key: "Ora", value: "CTF, bug bounty, PipeDuck" },
       ],
       portrait: {
         label: "Ritratto",
@@ -468,7 +473,7 @@ export const copy: Record<Lang, Copy> = {
       built: "Fatto con Next.js. L’ironia è voluta.",
       source: "Sorgenti",
       lap: "Tempo sul giro",
-      rights: "© 2026 Simone Russo",
+      rights: `© ${year} Simone Russo`,
       top: "Torna su",
       piano: "Pianoforte",
       pianoOn: "Tasti attivi",
