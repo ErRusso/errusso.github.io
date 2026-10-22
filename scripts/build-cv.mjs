@@ -37,22 +37,27 @@ if (!existsSync(join(root, "cv/index.html"))) {
 }
 
 const candidates = [
+  process.env.CHROME_PATH,
   process.env.CHROMIUM_BIN,
-  "chromium",
-  "chromium-browser",
   "google-chrome-stable",
   "google-chrome",
+  "chromium",
+  "chromium-browser",
   "chrome",
 ].filter(Boolean);
-const chromium = candidates.find(
-  (bin) => spawnSync("which", [bin], { stdio: "ignore" }).status === 0,
-);
+const chromium = candidates
+  .map((bin) => {
+    const result = spawnSync("which", [bin], { encoding: "utf8" });
+    return result.status === 0 ? result.stdout.trim() : null;
+  })
+  .find(Boolean);
 if (!chromium) {
   console.error(
-    `Chromium not found (tried ${candidates.join(", ")}). Set CHROMIUM_BIN to the browser binary.`,
+    `Chromium not found (tried ${candidates.join(", ")}). Set CHROME_PATH or CHROMIUM_BIN to the browser binary.`,
   );
   process.exit(1);
 }
+console.log(`Using browser: ${chromium}`);
 
 const mime = {
   ".html": "text/html; charset=utf-8",
@@ -115,19 +120,38 @@ const browser = spawn(
     "--disable-gpu",
     "--disable-dev-shm-usage",
     "--hide-scrollbars",
+    "--no-first-run",
+    "--no-default-browser-check",
+    "--disable-background-networking",
+    "--disable-component-update",
+    "--disable-sync",
     "--remote-debugging-port=0",
     `--user-data-dir=${profile}`,
     "about:blank",
   ],
-  { stdio: "ignore" },
+  { stdio: ["ignore", "ignore", "pipe"] },
 );
 
 const sleep = (ms) => new Promise((ok) => setTimeout(ok, ms));
 
+let browserOutput = "";
+let browserExit = null;
+let browserError = null;
+browser.stderr.on("data", (chunk) => {
+  browserOutput = (browserOutput + chunk).slice(-4000);
+});
+browser.on("error", (error) => {
+  browserError = error;
+});
+browser.on("exit", (code, signal) => {
+  browserExit = { code, signal };
+});
+
 // `--remote-debugging-port=0` writes the chosen port to DevToolsActivePort.
 // Read it before asking /json/list.
 let debugPort = 0;
-for (let i = 0; i < 100; i += 1) {
+for (let i = 0; i < 200; i += 1) {
+  if (browserError || browserExit) break;
   try {
     const lines = (await readFile(join(profile, "DevToolsActivePort"), "utf8")).trim().split("\n");
     debugPort = Number(lines[0]);
@@ -137,7 +161,19 @@ for (let i = 0; i < 100; i += 1) {
   }
   await sleep(100);
 }
-if (!debugPort) throw new Error("Chromium did not expose a DevTools port");
+if (!debugPort) {
+  browser.kill("SIGTERM");
+  server.close();
+  const reason = browserError
+    ? `could not start ${chromium}: ${browserError.message}`
+    : browserExit
+      ? `${chromium} exited (code ${browserExit.code}, signal ${browserExit.signal})`
+      : `${chromium} did not write DevToolsActivePort within 20s`;
+  const output = browserOutput.trim();
+  throw new Error(
+    `Chromium did not expose a DevTools port: ${reason}${output ? `\n${output}` : ""}`,
+  );
+}
 
 const list = await (await fetch(`http://127.0.0.1:${debugPort}/json/list`)).json();
 const target = list.find((item) => item.type === "page");
