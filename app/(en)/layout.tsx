@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CustomCursor } from "@/components/CustomCursor";
+import { BackToTop } from "@/components/BackToTop";
 import { LanguageTransition } from "@/components/LanguageTransition";
 import { ScrollMemory } from "@/components/ScrollMemory";
 import { copy } from "@/content/copy";
@@ -67,8 +67,8 @@ export default function EnglishLayout({ children }: { children: React.ReactNode 
         />
         <ScrollMemory />
         <LanguageTransition />
-        <CustomCursor />
         {children}
+        <BackToTop label={copy.en.footer.top} />
       </body>
     </html>
   );

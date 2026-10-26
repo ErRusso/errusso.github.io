@@ -25,9 +25,18 @@ export type Copy = {
     line2b: string;
     sub: string;
     location: string;
+    workCta: string;
     emailCta: string;
-    githubCta: string;
-    spec: { key: string; value: string }[];
+    proof: {
+      label: string;
+      updated: string;
+      tabs: { build: string; test: string; audit: string };
+      build: { unit: string; detail: string };
+      test: { unit: string; detail: string };
+      audit: { unit: string; detail: string };
+      linkCase: string;
+      linkSecurity: string;
+    };
   };
   marquee: string[];
   work: {
@@ -43,10 +52,6 @@ export type Copy = {
     title: string;
     intro: string;
     items: ServiceItem[];
-  };
-  audience: {
-    title: string;
-    tracks: { label: string; title: string; body: string; bullets: string[]; cta: string; subject: string }[];
   };
   about: {
     number: string;
@@ -67,9 +72,6 @@ export type Copy = {
     copied: string;
     github: string;
     availability: string;
-    cvFullstack: string;
-    cvAppsec: string;
-    localTime: string;
   };
   photography: {
     number: string;
@@ -81,12 +83,8 @@ export type Copy = {
   footer: {
     built: string;
     source: string;
-    lap: string;
     rights: string;
     top: string;
-    piano: string;
-    pianoOn: string;
-    pianoHint: string;
   };
   notFound: { code: string; title: string; line: string; cta: string };
   theme: { toggle: string };
@@ -126,16 +124,29 @@ export const copy: Record<Lang, Copy> = {
       line2a: "Tested to ",
       accent: "break",
       line2b: ".",
-      sub: "Full-stack developer and application security. TypeScript, Node, PostgreSQL — and the part most developers skip.",
+      sub: "Full-stack developer and application security. I take a product from an empty repository to production, then try to break it.",
       location: "Italy · remote",
+      workCta: "See the work",
       emailCta: "Write me",
-      githubCta: "GitHub",
-      spec: [
-        { key: "Role", value: "Full-stack developer" },
-        { key: "Focus", value: "Product + security" },
-        { key: "Base", value: "Italy · remote" },
-        { key: "Status", value: "Open to work" },
-      ],
+      proof: {
+        label: "Live proof",
+        updated: "Updated",
+        tabs: { build: "Build", test: "Test", audit: "Audit" },
+        build: {
+          unit: "CI build jobs",
+          detail: "PipeDuck {version}, {files} tracked files, ~{kb} KB C++.",
+        },
+        test: {
+          unit: "assertions",
+          detail: "{tests} test functions, run on every push.",
+        },
+        audit: {
+          unit: "known vulnerabilities",
+          detail: "{packages} packages audited with bun audit.",
+        },
+        linkCase: "Read the case study",
+        linkSecurity: "See the security notes",
+      },
     },
     marquee: [
       "TypeScript",
@@ -153,18 +164,18 @@ export const copy: Record<Lang, Copy> = {
     ],
     work: {
       number: "01",
-      title: "The work",
+      title: "Selected work",
       intro:
-        "Real constraints, real trade-offs, no concept mockups. Selected projects, written the way I would explain them to a colleague.",
+        "Three shipped projects. Schemas, APIs, CI and the security review behind them.",
       read: "Read the case study",
       all: "Everything else lives on GitHub",
       status: { shipped: "Shipped", contributed: "Contributed", live: "Live" },
     },
     services: {
       number: "02",
-      title: "What I do",
+      title: "What I build",
       intro:
-        "Three things I do. Every engagement starts with a written scope — good for both of us.",
+        "Three ways I work: build the product, review the code, rescue the project that stalled. Every engagement starts with a written scope.",
       items: [
         {
           id: "S.01",
@@ -196,35 +207,6 @@ export const copy: Record<Lang, Copy> = {
             "Refactor without a rewrite",
             "Deployment, CI and monitoring",
           ],
-        },
-      ],
-    },
-    audience: {
-      title: "Two ways to work together",
-      tracks: [
-        {
-          label: "For clients",
-          title: "You have a product to ship",
-          body: "An MVP, a rescue, or a second opinion on the code that matters. One person, from schema to deployment.",
-          bullets: [
-            "Scope written before the first commit",
-            "Weekly updates, no status meetings",
-            "Code another developer can pick up",
-          ],
-          cta: "Start a project",
-          subject: "Project enquiry",
-        },
-        {
-          label: "For teams",
-          title: "You are hiring",
-          body: "Full-stack TypeScript with security built in. I read code the way an attacker would, and I write down the decisions that are expensive to undo.",
-          bullets: [
-            "TypeScript, Node, PostgreSQL in production",
-            "Security reviews and threat modeling",
-            "Remote, EU timezone",
-          ],
-          cta: "Talk about a role",
-          subject: "Role opportunity",
         },
       ],
     },
@@ -261,9 +243,6 @@ export const copy: Record<Lang, Copy> = {
       copied: "Copied",
       github: "github.com/ErRusso",
       availability: "Available for new projects",
-      cvFullstack: "CV full-stack",
-      cvAppsec: "CV AppSec",
-      localTime: "Local time",
     },
     photography: {
       number: "04",
@@ -275,12 +254,8 @@ export const copy: Record<Lang, Copy> = {
     footer: {
       built: "Built with Next.js. The irony is intentional.",
       source: "Source",
-      lap: "Lap time",
       rights: `© ${year} Simone Russo`,
       top: "Back to top",
-      piano: "Piano",
-      pianoOn: "Keys on",
-      pianoHint: "Press A–K",
     },
     notFound: {
       code: "404",
@@ -323,16 +298,29 @@ export const copy: Record<Lang, Copy> = {
       line2a: "Testato per ",
       accent: "rompersi",
       line2b: ".",
-      sub: "Sviluppatore full-stack e application security. TypeScript, Node, PostgreSQL — e la parte che quasi tutti saltano.",
+      sub: "Sviluppatore full-stack e application security. Porto un prodotto da un repository vuoto alla produzione, poi provo a romperlo.",
       location: "Italia · remoto",
+      workCta: "Guarda i lavori",
       emailCta: "Scrivimi",
-      githubCta: "GitHub",
-      spec: [
-        { key: "Ruolo", value: "Sviluppatore full-stack" },
-        { key: "Focus", value: "Prodotto + sicurezza" },
-        { key: "Base", value: "Italia · remoto" },
-        { key: "Stato", value: "Aperto a proposte" },
-      ],
+      proof: {
+        label: "Prove live",
+        updated: "Aggiornato",
+        tabs: { build: "Build", test: "Test", audit: "Audit" },
+        build: {
+          unit: "job di build CI",
+          detail: "PipeDuck {version}, {files} file tracciati, ~{kb} KB di C++.",
+        },
+        test: {
+          unit: "asserzioni",
+          detail: "{tests} funzioni di test, eseguite a ogni push.",
+        },
+        audit: {
+          unit: "vulnerabilità note",
+          detail: "{packages} pacchetti verificati con bun audit.",
+        },
+        linkCase: "Leggi il case study",
+        linkSecurity: "Vedi le note di sicurezza",
+      },
     },
     marquee: [
       "TypeScript",
@@ -350,18 +338,18 @@ export const copy: Record<Lang, Copy> = {
     ],
     work: {
       number: "01",
-      title: "Il lavoro",
+      title: "Lavori scelti",
       intro:
-        "Vincoli veri, compromessi veri, niente mockup concettuali. Progetti scelti, raccontati come li spiegherei a un collega.",
+        "Tre progetti rilasciati. Schemi, API, CI e la revisione di sicurezza dietro ognuno.",
       read: "Leggi il case study",
       all: "Tutto il resto è su GitHub",
       status: { shipped: "Rilasciato", contributed: "Contributo", live: "Online" },
     },
     services: {
       number: "02",
-      title: "Cosa faccio",
+      title: "Cosa costruisco",
       intro:
-        "Tre cose che faccio. Ogni collaborazione parte da uno scope scritto — meglio per entrambi.",
+        "Tre modi di lavorare: costruire il prodotto, rivedere il codice, recuperare il progetto che si è fermato. Ogni collaborazione parte da uno scope scritto.",
       items: [
         {
           id: "S.01",
@@ -393,35 +381,6 @@ export const copy: Record<Lang, Copy> = {
             "Refactor senza riscrivere tutto",
             "Deploy, CI e monitoraggio",
           ],
-        },
-      ],
-    },
-    audience: {
-      title: "Due modi per lavorare insieme",
-      tracks: [
-        {
-          label: "Per i clienti",
-          title: "Hai un prodotto da spedire",
-          body: "Un MVP, un recupero o un secondo parere sul codice che conta. Una persona sola, dallo schema al deploy.",
-          bullets: [
-            "Scope scritto prima del primo commit",
-            "Aggiornamenti settimanali, senza riunioni di stato",
-            "Codice che un altro sviluppatore può prendere in mano",
-          ],
-          cta: "Inizia un progetto",
-          subject: "Progetto",
-        },
-        {
-          label: "Per i team",
-          title: "Stai assumendo",
-          body: "Full-stack TypeScript con la sicurezza dentro. Leggo il codice come farebbe un attaccante e metto per iscritto le decisioni che costano care da cambiare.",
-          bullets: [
-            "TypeScript, Node, PostgreSQL in produzione",
-            "Revisioni di sicurezza e threat model",
-            "Remoto, fuso orario UE",
-          ],
-          cta: "Parliamo di una posizione",
-          subject: "Posizione",
         },
       ],
     },
@@ -458,9 +417,6 @@ export const copy: Record<Lang, Copy> = {
       copied: "Copiata",
       github: "github.com/ErRusso",
       availability: "Disponibile per nuovi progetti",
-      cvFullstack: "CV full-stack",
-      cvAppsec: "CV AppSec",
-      localTime: "Ora locale",
     },
     photography: {
       number: "04",
@@ -472,12 +428,8 @@ export const copy: Record<Lang, Copy> = {
     footer: {
       built: "Fatto con Next.js. L’ironia è voluta.",
       source: "Sorgenti",
-      lap: "Tempo sul giro",
       rights: `© ${year} Simone Russo`,
       top: "Torna su",
-      piano: "Pianoforte",
-      pianoOn: "Tasti attivi",
-      pianoHint: "Premi A–K",
     },
     notFound: {
       code: "404",

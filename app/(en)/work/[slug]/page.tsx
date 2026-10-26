@@ -17,7 +17,7 @@ export async function generateMetadata({
   if (!project) return {};
 
   return {
-    title: `${project.name} — ${project.kicker.en}`,
+    title: `${project.name.en} — ${project.kicker.en}`,
     description: project.copy.en.summary,
     alternates: {
       canonical: `/work/${project.slug}/`,
@@ -28,7 +28,7 @@ export async function generateMetadata({
       },
     },
     openGraph: {
-      title: `${project.name} — ${project.kicker.en}`,
+      title: `${project.name.en} — ${project.kicker.en}`,
       description: project.copy.en.summary,
       url: `/work/${project.slug}/`,
       locale: "en_US",

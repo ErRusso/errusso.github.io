@@ -251,7 +251,7 @@ export function Professional({ lang }: { lang: Lang }) {
           </div>
         </section>
 
-        <NowSection lang={lang} full />
+        <NowSection lang={lang} />
 
         <section id="timeline" className="border-b border-ink">
           <SectionHeading number={t.timeline.number} title={t.timeline.title} intro={t.timeline.intro} />

@@ -33,7 +33,7 @@ export function WorkList({ lang }: { lang: Lang }) {
                 <div className={`flex flex-col justify-between gap-6 ${reversed ? "md:order-1" : ""}`}>
                   <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-ink pb-3">
                     <span className="label text-violet">
-                      {String(index + 1).padStart(2, "0")} / {project.name}
+                      {String(index + 1).padStart(2, "0")}
                     </span>
                     <span className="label text-concrete">
                       {project.year} · {t.work.status[project.statusKey]}
@@ -42,7 +42,7 @@ export function WorkList({ lang }: { lang: Lang }) {
 
                   <div>
                     <h3 className="font-display text-[clamp(2.1rem,5vw,4.4rem)] font-black uppercase leading-[0.88] tracking-[-0.045em] transition-colors duration-100 group-hover:text-violet">
-                      {project.name}
+                      {project.name[lang]}
                     </h3>
                     <p className="mt-4 max-w-[48ch] text-base leading-relaxed text-ink/80 md:text-lg">
                       {project.copy[lang].summary}
@@ -54,14 +54,6 @@ export function WorkList({ lang }: { lang: Lang }) {
                       {project.highlight[lang]}
                     </p>
                   </div>
-
-                  <ul className="flex flex-wrap gap-2" aria-label="Stack">
-                    {project.stack.map((tech) => (
-                      <li key={tech} className="label border border-ink px-2 py-1 text-ink/70">
-                        {tech}
-                      </li>
-                    ))}
-                  </ul>
 
                   <span className="link-arrow self-start">
                     {t.work.read}
