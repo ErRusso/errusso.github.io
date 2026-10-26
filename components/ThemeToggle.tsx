@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type MouseEvent } from "react";
 import { ensureWipeStyles, runThemeWipe } from "@/lib/wipe";
 
 type Theme = "light" | "dark";
@@ -12,6 +12,9 @@ export function ThemeToggle({ label }: { label: string }) {
   // dataset.theme means rapid clicks always alternate, even when a click lands
   // before the in-flight transition has flipped the attribute.
   const target = useRef<Theme | null>(null);
+  // The button that started the wipe: the header and the mobile menu each
+  // render one, so looking it up by selector could pick a hidden button.
+  const origin = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     // Inject the ::view-transition-* iris-wipe rules as a runtime <style>:
@@ -25,15 +28,15 @@ export function ThemeToggle({ label }: { label: string }) {
   // glitch when toggling rapidly.
   function startWipe(nextTheme: Theme) {
     // The iris opens from the button's centre.
-    const btn = document.querySelector<HTMLButtonElement>(
-      '[aria-label="Toggle dark mode"], [title="Toggle dark mode"], button.theme-icon-light, .theme-toggle',
-    );
+    const btn = origin.current;
     let x = window.innerWidth / 2;
     let y = 24;
-    if (btn) {
+    if (btn?.isConnected) {
       const rect = btn.getBoundingClientRect();
-      x = rect.left + rect.width / 2;
-      y = rect.top + rect.height / 2;
+      if (rect.width > 0) {
+        x = rect.left + rect.width / 2;
+        y = rect.top + rect.height / 2;
+      }
     }
 
     void runThemeWipe(nextTheme, x, y)
@@ -59,7 +62,8 @@ export function ThemeToggle({ label }: { label: string }) {
       });
   }
 
-  function toggleTheme() {
+  function toggleTheme(event: MouseEvent<HTMLButtonElement>) {
+    origin.current = event.currentTarget;
     const root = document.documentElement;
     const current = target.current ?? (root.dataset.theme === "dark" ? "dark" : "light");
     const next: Theme = current === "dark" ? "light" : "dark";
@@ -81,7 +85,7 @@ export function ThemeToggle({ label }: { label: string }) {
       onClick={toggleTheme}
       aria-label={label}
       title={label}
-      className="flex h-8 w-8 shrink-0 items-center justify-center border border-ink transition-colors duration-100 hover:bg-ink hover:text-paper"
+      className="flex h-9 w-9 shrink-0 items-center justify-center border border-ink transition-colors duration-100 hover:bg-ink hover:text-paper md:h-8 md:w-8"
     >
       <svg
         aria-hidden

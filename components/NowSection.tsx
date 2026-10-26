@@ -1,6 +1,5 @@
-import Link from "next/link";
 import { professional } from "@/content/professional";
-import { href, type Lang } from "@/lib/i18n";
+import type { Lang } from "@/lib/i18n";
 import { now, type NowIssue } from "@/lib/now";
 import { SectionHeading } from "./SectionHeading";
 
@@ -63,12 +62,12 @@ function IssueList({
   );
 }
 
-export function NowSection({ lang, full = false }: { lang: Lang; full?: boolean }) {
+export function NowSection({ lang }: { lang: Lang }) {
   const copy = professional[lang].now;
   const labels = copy.labels;
   const repos = now.repos.slice(0, 3);
-  const done = full ? now.issues.done : now.issues.done.slice(0, 3);
-  const next = full ? now.issues.next : now.issues.next.slice(0, 3);
+  const done = now.issues.done;
+  const next = now.issues.next;
 
   return (
     <section id="now" className="border-b border-ink">
@@ -129,15 +128,10 @@ export function NowSection({ lang, full = false }: { lang: Lang; full?: boolean 
           />
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="mt-4">
           <p className="label text-concrete">
             {labels.updated}: {formatDate(now.updated, lang)}
           </p>
-          {!full ? (
-            <Link href={href(lang, "/professional")} prefetch={false} className="link-arrow">
-              {labels.all} <span aria-hidden>→</span>
-            </Link>
-          ) : null}
         </div>
       </div>
     </section>

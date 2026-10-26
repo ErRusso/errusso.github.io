@@ -1,7 +1,9 @@
 import type { CSSProperties } from "react";
 import type { Lang } from "@/lib/i18n";
 import { copy } from "@/content/copy";
+import { now } from "@/lib/now";
 import { site } from "@/lib/site";
+import { HeroProof, type HeroProofData } from "./HeroProof";
 
 /* Each letter drifts when the word takes the hit. The pattern repeats for
    longer words (IT "rompersi"); values are in em so they scale with the
@@ -27,12 +29,41 @@ function breakStyle(index: number): CSSProperties {
   } as CSSProperties;
 }
 
+const pipeduckFallback = {
+  testFunctions: 29,
+  assertions: 431,
+  trackedFiles: 86,
+  cppKb: 368,
+  buildJobs: 4,
+};
+
+function proofDate(value: string, lang: Lang): string {
+  return new Intl.DateTimeFormat(lang === "it" ? "it-IT" : "en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${value}T12:00:00Z`));
+}
+
 export function Hero({ lang }: { lang: Lang }) {
   const t = copy[lang];
+  const stats = now.projectStats?.pipeduck ?? pipeduckFallback;
+  const proof: HeroProofData = {
+    updated: proofDate(now.updated, lang),
+    version: now.release.version,
+    buildJobs: stats.buildJobs ?? pipeduckFallback.buildJobs,
+    trackedFiles: stats.trackedFiles,
+    cppKb: stats.cppKb,
+    testFunctions: stats.testFunctions,
+    assertions: stats.assertions,
+    packages: now.audit.packages,
+    vulnerabilities: now.audit.vulnerabilities,
+  };
 
   return (
-    <section id="top" className="border-b border-ink">
-      <div className="mx-auto w-full max-w-[1440px] px-5 pt-8 md:px-8 md:pt-14">
+    <section id="hero" className="border-b border-ink">
+      <div className="mx-auto w-full max-w-[1440px] px-5 pb-10 pt-8 md:px-8 md:pb-14 md:pt-12">
         <p className="label flex flex-wrap items-center gap-x-3 gap-y-2 text-concrete">
           <span className="flex items-center gap-2 text-ink">
             <span aria-hidden className="status-dot" />
@@ -42,70 +73,55 @@ export function Hero({ lang }: { lang: Lang }) {
           <span>{t.hero.location}</span>
         </p>
 
-        <h1 className="mt-6 font-display text-[clamp(2.2rem,9vw,8.5rem)] font-black uppercase leading-[0.82] tracking-[-0.045em]">
-          <span className="block">{t.hero.line1}</span>
-          <span className="block">
-            {t.hero.line2a}
-            <span className="whitespace-nowrap">
-              <span className="sr-only">{t.hero.accent}</span>
-              <span className="hero-break text-violet" aria-hidden="true">
-                {Array.from(t.hero.accent).map((letter, index) => (
-                  <span key={index} className="hero-break-letter" style={breakStyle(index)}>
-                    {letter}
+        <div className="mt-6 grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-10">
+          <div>
+            <h1 className="font-display text-[clamp(2.2rem,6vw,6rem)] font-black uppercase leading-[0.82] tracking-[-0.045em]">
+              <span className="block">{t.hero.line1}</span>
+              <span className="block">
+                {t.hero.line2a}
+                <span className="whitespace-nowrap">
+                  <span className="sr-only">{t.hero.accent}</span>
+                  <span className="hero-break text-violet" aria-hidden="true">
+                    {Array.from(t.hero.accent).map((letter, index) => (
+                      <span key={index} className="hero-break-letter" style={breakStyle(index)}>
+                        {letter}
+                      </span>
+                    ))}
                   </span>
-                ))}
+                  {t.hero.line2b}
+                </span>
               </span>
-              {t.hero.line2b}
-            </span>
-          </span>
-        </h1>
+            </h1>
 
-        <div className="mt-10 grid gap-8 border-t border-ink pt-8 md:mt-14 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:gap-12">
-          <p className="max-w-[48ch] text-lg leading-relaxed md:text-xl">{t.hero.sub}</p>
+            <p className="mt-6 max-w-[52ch] text-lg leading-relaxed md:text-xl">
+              {t.hero.sub}
+            </p>
 
-          <div className="flex flex-wrap gap-3">
-            <a
-              href={`mailto:${site.email}`}
-              className="group flex items-center justify-between gap-6 border border-ink bg-ink px-5 py-3.5 text-paper transition-colors duration-100 hover:border-violet hover:bg-violet"
-            >
-              <span className="label">{t.hero.emailCta}</span>
-              <span aria-hidden className="text-lg leading-none transition-transform duration-100 group-hover:translate-x-1">
-                →
-              </span>
-            </a>
-            <a
-              href={site.github}
-              target="_blank"
-              rel="noreferrer"
-              className="group flex items-center justify-between gap-6 border border-ink px-5 py-3.5 transition-colors duration-100 hover:bg-ink hover:text-paper"
-            >
-              <span className="label">{t.hero.githubCta}</span>
-              <span aria-hidden className="text-lg leading-none transition-transform duration-100 group-hover:-translate-y-0.5">
-                ↗
-              </span>
-            </a>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a
+                href="#work"
+                className="group flex items-center justify-between gap-6 border border-ink bg-ink px-5 py-3.5 text-paper transition-colors duration-100 hover:border-violet hover:bg-violet"
+              >
+                <span className="label">{t.hero.workCta}</span>
+                <span aria-hidden className="text-lg leading-none transition-transform duration-100 group-hover:translate-y-0.5">
+                  ↓
+                </span>
+              </a>
+              <a
+                href={`mailto:${site.email}`}
+                className="group flex items-center justify-between gap-6 border border-ink px-5 py-3.5 transition-colors duration-100 hover:bg-ink hover:text-paper"
+              >
+                <span className="label">{t.hero.emailCta}</span>
+                <span aria-hidden className="text-lg leading-none transition-transform duration-100 group-hover:translate-x-1">
+                  →
+                </span>
+              </a>
+            </div>
           </div>
+
+          <HeroProof lang={lang} copy={t.hero.proof} data={proof} />
         </div>
       </div>
-
-      <dl className="mx-auto mt-10 grid max-w-[1440px] grid-cols-2 border-t border-ink md:mt-14 md:grid-cols-4">
-        {t.hero.spec.map((item, index) => (
-          <div
-            key={item.key}
-            className={[
-              "border-ink px-5 py-4 md:px-8",
-              index % 2 === 1 ? "border-l" : "",
-              index >= 2 ? "border-t md:border-t-0" : "",
-              index > 0 ? "md:border-l" : "",
-            ].join(" ")}
-          >
-            <dt className="label text-concrete">{item.key}</dt>
-            <dd className="mt-2 font-display text-base font-bold uppercase leading-tight tracking-[-0.01em] md:text-lg">
-              {item.value}
-            </dd>
-          </div>
-        ))}
-      </dl>
     </section>
   );
 }

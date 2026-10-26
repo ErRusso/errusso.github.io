@@ -1,6 +1,5 @@
 import { copy } from "@/content/copy";
 import type { Lang } from "@/lib/i18n";
-import { Audience } from "./Audience";
 import { Reveal } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 
@@ -44,8 +43,6 @@ export function Services({ lang }: { lang: Lang }) {
           );
         })}
       </Reveal>
-
-      <Audience lang={lang} />
     </section>
   );
 }

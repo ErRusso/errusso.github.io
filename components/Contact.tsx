@@ -1,11 +1,9 @@
 import type { CSSProperties } from "react";
 
 import { copy } from "@/content/copy";
-import { cvHref } from "@/lib/cv";
 import { site } from "@/lib/site";
 import type { Lang } from "@/lib/i18n";
 import { CopyEmail } from "./CopyEmail";
-import { LocalTime } from "./LocalTime";
 import { Reveal } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
 
@@ -48,22 +46,6 @@ export function Contact({ lang }: { lang: Lang }) {
         <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-4">
           <CopyEmail email={site.email} label={t.copy} copied={t.copied} />
           <a
-            href={cvHref("fullstack", lang)}
-            download
-            className="label flex items-center gap-2 border border-ink px-3 py-2 transition-colors duration-100 hover:bg-ink hover:text-paper"
-          >
-            {t.cvFullstack}
-            <span aria-hidden>↓</span>
-          </a>
-          <a
-            href={cvHref("appsec", lang)}
-            download
-            className="label flex items-center gap-2 border border-ink px-3 py-2 transition-colors duration-100 hover:bg-ink hover:text-paper"
-          >
-            {t.cvAppsec}
-            <span aria-hidden>↓</span>
-          </a>
-          <a
             href={site.github}
             target="_blank"
             rel="noreferrer"
@@ -76,7 +58,6 @@ export function Contact({ lang }: { lang: Lang }) {
             <span aria-hidden className="status-dot" />
             {t.availability}
           </span>
-          <LocalTime label={t.localTime} timeZone={site.timeZone} />
         </div>
       </Reveal>
     </section>

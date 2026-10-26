@@ -45,7 +45,7 @@ export function CaseStudy({ lang, project }: { lang: Lang; project: Project }) {
               </div>
 
               <h1 className="mt-6 font-display text-[clamp(2.6rem,7.6vw,6.5rem)] font-black uppercase leading-[0.85] tracking-[-0.045em]">
-                {project.name}
+                {project.name[lang]}
               </h1>
 
               <p className="mt-6 max-w-[56ch] text-lg leading-relaxed md:text-xl">{content.tagline}</p>
@@ -143,7 +143,7 @@ export function CaseStudy({ lang, project }: { lang: Lang; project: Project }) {
             <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-x-6 gap-y-2 px-5 py-10 md:px-8">
               <span className="label text-concrete">{t.caseStudy.next}</span>
               <span className="font-display text-[clamp(2rem,6vw,4.5rem)] font-black uppercase leading-none tracking-[-0.04em] transition-colors duration-100 group-hover:text-violet">
-                {next.name}
+                {next.name[lang]}
                 <span aria-hidden className="ml-3 inline-block transition-transform duration-150 group-hover:translate-x-2">
                   →
                 </span>

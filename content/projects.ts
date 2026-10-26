@@ -113,7 +113,7 @@ export type ProjectCopy = {
 
 export type Project = {
   slug: string;
-  name: string;
+  name: Record<Lang, string>;
   year: string;
   kicker: Record<Lang, string>;
   statusKey: "shipped" | "contributed" | "live";
@@ -131,7 +131,7 @@ export type Project = {
 export const projects: Project[] = [
   {
     slug: "pipeduck",
-    name: "PipeDuck",
+    name: { en: "PipeDuck", it: "PipeDuck" },
     year: "2026",
     kicker: { en: "Flagship build", it: "Progetto principale" },
     statusKey: "shipped",
@@ -221,7 +221,7 @@ export const projects: Project[] = [
   },
   {
     slug: "marmotta",
-    name: "Marmotta",
+    name: { en: "Marmotta", it: "Marmotta" },
     year: "2026",
     kicker: { en: "Open source contribution", it: "Contributo open source" },
     statusKey: "contributed",
@@ -283,7 +283,7 @@ export const projects: Project[] = [
   },
   {
     slug: "this-website",
-    name: "This website",
+    name: { en: "This website", it: "Questo sito" },
     year: "2026",
     kicker: { en: "Meta project", it: "Progetto meta" },
     statusKey: "live",

@@ -2,13 +2,9 @@ import { copy } from "@/content/copy";
 import type { Lang } from "@/lib/i18n";
 import { href } from "@/lib/i18n";
 import { site } from "@/lib/site";
-import { LapTime } from "./LapTime";
-import { LocalTime } from "./LocalTime";
-import { Piano } from "./Piano";
 
 export function Footer({ lang }: { lang: Lang }) {
   const t = copy[lang].footer;
-  const contact = copy[lang].contact;
   const nav = copy[lang].nav;
 
   const linkClass =
@@ -16,7 +12,7 @@ export function Footer({ lang }: { lang: Lang }) {
 
   return (
     <footer className="bg-surface text-on-surface">
-      <div className="mx-auto grid max-w-[1440px] gap-10 px-5 py-12 md:grid-cols-[1.2fr_0.8fr_1fr] md:px-8">
+      <div className="mx-auto grid max-w-[1440px] gap-10 px-5 py-12 md:grid-cols-[1.2fr_0.8fr] md:px-8">
         <div>
           <p className="font-display text-2xl font-black uppercase leading-none tracking-[-0.035em]">
             Simone
@@ -27,7 +23,7 @@ export function Footer({ lang }: { lang: Lang }) {
           </p>
         </div>
 
-        <nav aria-label="Footer" className="flex flex-col items-start gap-3">
+        <nav aria-label={lang === "it" ? "Piè di pagina" : "Footer"} className="flex flex-col items-start gap-3">
           <a href={`mailto:${site.email}`} className={linkClass}>
             {site.email}
           </a>
@@ -47,14 +43,6 @@ export function Footer({ lang }: { lang: Lang }) {
             {t.source} ↗
           </a>
         </nav>
-
-        <div className="flex flex-col items-start gap-3">
-          <LapTime label={t.lap} />
-          <LocalTime label={contact.localTime} timeZone={site.timeZone} />
-          <div className="hidden md:block">
-            <Piano label={t.piano} onLabel={t.pianoOn} hint={t.pianoHint} />
-          </div>
-        </div>
       </div>
 
       <div className="border-t border-on-surface/15">
