@@ -403,12 +403,16 @@ async function topRepositories() {
   // A public profile often has fewer than three repos with commits in the
   // window (no token locally, or a quiet year). Fill the rest with the most
   // recently pushed public repositories, which is the next-best "in use" signal.
+  //
+  // Always use the public `/users/:username/repos` endpoint. `/user/repos`
+  // requires a user token, but GitHub Actions passes an installation token
+  // whose user is the `github-actions` bot; calling `/user/repos` there returns
+  // 403 and used to fail every scheduled deployment.
   if (collected.length < TOP_REPOS) {
     try {
-      const path = token
-        ? `/user/repos?affiliation=owner,collaborator,organization_member&sort=pushed&direction=desc&per_page=100`
-        : `/users/${GITHUB_USER}/repos?sort=pushed&direction=desc&per_page=100&type=owner`;
-      const repos = await github(path);
+      const repos = await github(
+        `/users/${GITHUB_USER}/repos?sort=pushed&direction=desc&per_page=100&type=owner`,
+      );
       repos.map(normalizeRepo).forEach(accept);
     } catch (error) {
       console.warn(`[now:sync] top repositories: ${error.message}`);
